@@ -64,22 +64,35 @@ exports.getUserId = (req, res, next) => {
         });
 };
 exports.updateUserId = (req, res, next) => {
-  User.findByIdAndUpdate(req.params.id, req.body)
+  User.findById(req.params.id)
     .then((data) => {
-      return res.status(200).json({ success: true, data: data });
+      Address.findByIdAndUpdate(data.address, { ...req.body.address }).then(
+        () => {
+          User.findByIdAndUpdate(req.params.id, {
+            ...req.body,
+            address: req.body.address._id,
+          }).then((result) => {
+            return res.status(200).json({ success: true, data: result });
+          });
+        }
+      );
     })
     .catch((err) => {
       console.error(err);
-      return res.status(403).json({ err: err });
+      return res.status(404).json({ err: "No User Found" });
     });
 };
 exports.deleteUserId = (req, res, next) => {
-  User.findByIdAndDelete(req.params.id)
+  User.findById(req.params.id)
     .then((data) => {
-      return res.status(200).json({ success: true, data: data });
+      Address.findByIdAndDelete(data.address).then(() => {
+        User.findByIdAndDelete(req.params.id).then((result) => {
+          return res.status(200).json({ delete: true, data: result });
+        });
+      });
     })
     .catch((err) => {
       console.error(err);
-      return res.status(403).json({ err: err });
+      return res.status(404).json({ err: "No User Found" });
     });
 };

@@ -36,7 +36,6 @@ const UserSchema = new Schema({
   address: {
     type: mongoose.Types.ObjectId,
     ref: "Address",
-    required: [true, "address field is required"],
   },
   created_at: {
     type: Date,
