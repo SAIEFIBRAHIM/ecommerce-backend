@@ -13,5 +13,17 @@ const AddressSchema = new Schema({
     type: String,
     required: [true, "road field is required"],
   },
+  created_at: {
+    type: Date,
+    default: Date.now(),
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now(),
+  },
+  deleted_at: {
+    type: Date,
+    default: null,
+  },
 });
 module.exports = mongoose.model("Address", AddressSchema);

@@ -8,6 +8,7 @@ var mongoose = require("mongoose");
 var config = require("./config/database");
 
 var usersRouter = require("./routes/users");
+var companiesRouter = require("./routes/companies");
 //Mongoose Connect
 
 mongoose
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //routes
 app.use("/users", usersRouter);
+app.use("/companies", companiesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
