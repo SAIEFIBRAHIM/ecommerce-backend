@@ -13,6 +13,12 @@ const AddressSchema = new Schema({
     type: String,
     required: [true, "road field is required"],
   },
+  users: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   created_at: {
     type: Date,
     default: Date.now(),
