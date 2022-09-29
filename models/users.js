@@ -4,12 +4,12 @@ const UserSchema = new Schema({
   username: {
     type: String,
     required: [true, "username field is required"],
-    unique: true,
+    unique: [true, "This username is already used"],
   },
   email: {
     type: String,
-    required: [true, "email field is required"],
-    unique: true,
+    required: [true, "Email field is required"],
+    unique: [true, "This Email is already used"],
   },
   password: {
     type: String,

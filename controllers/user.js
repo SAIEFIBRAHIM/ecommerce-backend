@@ -2,21 +2,29 @@ const User = require("../models/users");
 const Address = require("../models/address");
 
 exports.addUser = async (req, res, next) => {
-  var address = new Address(req.body.address);
-  await address.save().catch((err) => {
-    console.error(err);
-    return res.status(403).json({ err: err });
-  });
-
-  var user = new User({ ...req.body, address: address._id });
-  user
-    .save()
+  await Address.findOne({
+    country: req.body.address.country,
+    city: req.body.address.city,
+    road: req.body.address.road,
+  })
     .then((data) => {
-      return res.status(201).json({
-        success: true,
-        msg: "Successful created new User",
-        data: data,
-      });
+      if (data) {
+        var user = new User({ ...req.body, address: data._id });
+        user
+          .save()
+          .then((result) => {
+            return res.status(201).json({
+              success: true,
+              msg: "Successful created new User",
+              data: result,
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+            return res.status(403).json({ err: error });
+          });
+      } else
+        return res.status(403).json({ err: "Wrong Address", address: data });
     })
     .catch((err) => {
       console.error(err);
@@ -63,19 +71,24 @@ exports.getUserId = (req, res, next) => {
           return res.status(403).json({ err: err });
         });
 };
-exports.updateUserId = (req, res, next) => {
-  User.findById(req.params.id)
+exports.updateUserId = async (req, res, next) => {
+  await Address.find({
+    country: req.body.address.country,
+    city: req.body.address.city,
+    road: req.body.address.road,
+  })
     .then((data) => {
-      Address.findByIdAndUpdate(data.address, { ...req.body.address }).then(
-        () => {
-          User.findByIdAndUpdate(req.params.id, {
-            ...req.body,
-            address: req.body.address._id,
-          }).then((result) => {
-            return res.status(200).json({ success: true, data: result });
-          });
-        }
-      );
+      User.findByIdAndUpdate(req.params.id, {
+        ...req.body,
+        address: data.address._id,
+      })
+        .then((result) => {
+          return res.status(200).json({ success: true, data: result });
+        })
+        .catch((error) => {
+          console.error(error);
+          return res.status(404).json({ err: "No User Found" });
+        });
     })
     .catch((err) => {
       console.error(err);
@@ -83,14 +96,11 @@ exports.updateUserId = (req, res, next) => {
     });
 };
 exports.deleteUserId = (req, res, next) => {
-  User.findById(req.params.id)
-    .then((data) => {
-      Address.findByIdAndDelete(data.address).then(() => {
-        User.findByIdAndDelete(req.params.id).then((result) => {
-          return res.status(200).json({ delete: true, data: result });
-        });
-      });
+  User.findByIdAndDelete(req.params.id)
+    .then((result) => {
+      return res.status(200).json({ delete: true, data: result });
     })
+
     .catch((err) => {
       console.error(err);
       return res.status(404).json({ err: "No User Found" });

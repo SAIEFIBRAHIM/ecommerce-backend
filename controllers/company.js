@@ -31,6 +31,21 @@ exports.getCompanies = (req, res, next) => {
           console.log(err);
           return res.status(403).json({ err: err });
         })
+    : req.query.populate === "users.address"
+    ? Companies.find()
+        .populate({ path: "users", populate: { path: "address" } })
+        .then((data) => {
+          console.log(req.query.populate);
+          return res.status(200).json({
+            success: true,
+            companies: data.length,
+            data: data,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.status(403).json({ err: err });
+        })
     : Companies.find()
         .then((data) => {
           return res.status(200).json({
