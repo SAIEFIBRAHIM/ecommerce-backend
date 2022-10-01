@@ -56,7 +56,9 @@ exports.getUserId = (req, res, next) => {
     ? User.findById(req.params.id)
         .populate("address")
         .then((data) => {
-          return res.status(200).json({ success: true, data: data });
+          data
+            ? res.status(200).json({ success: true, data: data })
+            : res.status(404).json({ success: false, data: "No User Found" });
         })
         .catch((err) => {
           console.error(err);
@@ -64,7 +66,9 @@ exports.getUserId = (req, res, next) => {
         })
     : User.findById(req.params.id)
         .then((data) => {
-          return res.status(200).json({ success: true, data: data });
+          data
+            ? res.status(200).json({ success: true, data: data })
+            : res.status(404).json({ success: false, data: "No User Found" });
         })
         .catch((err) => {
           console.error(err);
