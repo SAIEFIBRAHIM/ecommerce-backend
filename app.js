@@ -6,12 +6,12 @@ var logger = require("morgan");
 var app = express();
 var mongoose = require("mongoose");
 var config = require("./config/database");
-
 var usersRouter = require("./routes/users");
 var addressRouter = require("./routes/address");
 var companiesRouter = require("./routes/companies");
-//Mongoose Connect
 
+require("dotenv").config();
+//Mongoose Connect
 mongoose
   .connect(config.database)
   .then(() => {

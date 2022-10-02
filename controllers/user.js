@@ -1,6 +1,7 @@
 const User = require("../models/users");
 const Address = require("../models/address");
-
+const jwt = require("jsonwebtoken");
+const jwtToken = require("../config/token");
 exports.addUser = async (req, res, next) => {
   await Address.findOne({
     country: req.body.address.country,
@@ -109,4 +110,41 @@ exports.deleteUserId = (req, res, next) => {
       console.error(err);
       return res.status(404).json({ err: "No User Found" });
     });
+};
+exports.login = (req, res, next) => {
+  User.findOne(
+    {
+      username: req.body.username,
+    },
+    (err, user) => {
+      if (err) throw err;
+      if (!user) {
+        res.status(401).send({
+          success: false,
+          msg: "Authentication failed. User not found.",
+        });
+      } else {
+        user.comparePassword(req.body.password, (err, isMatch) => {
+          if (isMatch && !err) {
+            var token = jwtToken(user);
+            res.json({
+              success: true,
+              token: `JWT ${token}`,
+              user: {
+                username: user.username,
+                email: user.email,
+                _id: user._id,
+              },
+            });
+          } else {
+            console.log(err);
+            res.status(401).send({
+              success: false,
+              msg: "Authentication failed. Wrong password.",
+            });
+          }
+        });
+      }
+    }
+  );
 };

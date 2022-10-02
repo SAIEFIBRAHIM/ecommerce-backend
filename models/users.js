@@ -1,15 +1,23 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const bcrypt = require("bcrypt-nodejs");
+const validator = require("validator");
+
 const UserSchema = new Schema({
   username: {
     type: String,
     required: [true, "username field is required"],
-    unique: [true, "This username is already used"],
+    unique: true,
   },
   email: {
     type: String,
     required: [true, "Email field is required"],
-    unique: [true, "This Email is already used"],
+    unique: true,
+    validate: {
+      validator: validator.isEmail,
+      message: "{VALUE} is not a valid email",
+      isAsync: false,
+    },
   },
   password: {
     type: String,
@@ -50,5 +58,33 @@ const UserSchema = new Schema({
     default: null,
   },
 });
+UserSchema.pre("save", function (next) {
+  var User = this;
+  if (this.isModified("password") || this.isNew) {
+    bcrypt.genSalt(10, function (err, salt) {
+      if (err) {
+        return next(err);
+      }
+      bcrypt.hash(User.password, salt, null, function (err, hash) {
+        if (err) {
+          return next(err);
+        }
+        User.password = hash;
+        next();
+      });
+    });
+  } else {
+    return next();
+  }
+});
+
+UserSchema.methods.comparePassword = function (passw, cb) {
+  bcrypt.compare(passw, this.password, function (err, isMatch) {
+    if (err) {
+      return cb(err);
+    }
+    cb(null, isMatch);
+  });
+};
 
 module.exports = mongoose.model("User", UserSchema);
