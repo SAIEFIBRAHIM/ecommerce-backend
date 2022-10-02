@@ -1,7 +1,9 @@
 const User = require("../models/users");
 const Address = require("../models/address");
 const jwt = require("jsonwebtoken");
-const jwtToken = require("../config/token");
+const tokenList = {};
+const cookieParser = require("cookie-parser");
+
 exports.addUser = async (req, res, next) => {
   await Address.findOne({
     country: req.body.address.country,
@@ -126,16 +128,41 @@ exports.login = (req, res, next) => {
       } else {
         user.comparePassword(req.body.password, (err, isMatch) => {
           if (isMatch && !err) {
-            var token = jwtToken(user);
-            res.json({
-              success: true,
-              token: `JWT ${token}`,
+            const token = jwt.sign(user.toJSON(), process.env.TOKEN_KEY, {
+              expiresIn: process.env.TOKEN_LIFE,
+            });
+
+            const refreshToken = jwt.sign(
+              user.toJSON(),
+              process.env.REFRESH_TOKEN_KEY,
+              {
+                expiresIn: process.env.REFRESH_TOKEN_LIFE,
+              }
+            );
+            res.cookie("username", user.username, {
+              httpOnly: true,
+              maxAge: 1000 * 60 * 60 * 24 * 7,
+            });
+            res.cookie("token", token, {
+              httpOnly: true,
+              maxAge: 1000 * 60 * 60 * 24 * 7,
+            });
+
+            res.cookie("refreshToken", refreshToken, {
+              httpOnly: true,
+              maxAge: 1000 * 60 * 60 * 24 * 7,
+            });
+            const response = {
+              status: "Logged in",
+              token: token,
+              refreshToken: refreshToken,
               user: {
                 username: user.username,
-                email: user.email,
                 _id: user._id,
               },
-            });
+            };
+            tokenList[refreshToken] = response;
+            res.status(200).json(response);
           } else {
             console.log(err);
             res.status(401).send({
@@ -147,4 +174,34 @@ exports.login = (req, res, next) => {
       }
     }
   );
+};
+exports.token = (req, res, next) => {
+  if (req.cookies.refreshToken && req.cookies.refreshToken in tokenList) {
+    User.findOne(
+      {
+        username: req.cookies.username,
+      },
+      (err, user) => {
+        if (err) throw err;
+        if (!user) {
+          res.status(401).send({
+            success: false,
+            msg: "Authentication failed. User not found.",
+          });
+        } else {
+          const token = jwt.sign(user.toJSON(), process.env.TOKEN_KEY, {
+            expiresIn: process.env.TOKEN_LIFE,
+          });
+          res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 30,
+          });
+          tokenList[req.cookies.refreshToken].token = token;
+          res.status(200).json({ token: token });
+        }
+      }
+    );
+  } else {
+    res.status(404).send("Invalid request");
+  }
 };
