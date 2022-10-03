@@ -87,14 +87,14 @@ exports.updateUserId = async (req, res, next) => {
     .then((data) => {
       User.findByIdAndUpdate(req.params.id, {
         ...req.body,
-        address: data.address._id,
+        address: data._id,
       })
         .then((result) => {
           return res.status(200).json({ success: true, data: result });
         })
         .catch((error) => {
           console.error(error);
-          return res.status(404).json({ err: "No User Found" });
+          return res.status(404).json({ err: error });
         });
     })
     .catch((err) => {

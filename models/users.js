@@ -34,12 +34,15 @@ const UserSchema = new Schema({
   gender: {
     type: String,
     enum: ["Male", "Female"],
-    default: "Male",
-    required: [true, "gender field is required"],
   },
   phone: {
     type: Number,
     required: [true, "phone field is required"],
+  },
+  role: {
+    type: String,
+    enum: ["Admin", "User"],
+    default: "User",
   },
   address: {
     type: mongoose.Types.ObjectId,

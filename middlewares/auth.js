@@ -8,9 +8,7 @@ module.exports = (req, res, next) => {
   try {
     const decoded = jwt.verify(req.cookies.token, process.env.TOKEN_KEY);
     req.decoded = decoded;
-    console.log(decoded);
   } catch (err) {
-    console.log(err);
     return res.status(403).send("Invalid Token");
   }
   return next();

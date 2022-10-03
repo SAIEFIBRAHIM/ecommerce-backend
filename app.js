@@ -1,23 +1,43 @@
 var createError = require("http-errors");
 var express = require("express");
+var app = express();
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-var app = express();
 var mongoose = require("mongoose");
-var config = require("./config/database");
+var dbConfig = require("./config/database");
 var usersRouter = require("./routes/users");
 var addressRouter = require("./routes/address");
 var companiesRouter = require("./routes/companies");
+var swaggerJsDoc = require("swagger-jsdoc");
+var swaggerUi = require("swagger-ui-express");
 
 require("dotenv").config();
 //Mongoose Connect
 mongoose
-  .connect(config.database)
+  .connect(dbConfig.database)
   .then(() => {
-    console.log("connection succesful");
+    console.log("db cluster connected");
   })
   .catch((err) => console.error(err));
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Ecommerce API",
+      version: "1.0.0",
+      description: "REST API documentation",
+    },
+    servers: [
+      {
+        url: "localhost:1337",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+const specs = swaggerJsDoc(options);
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -26,6 +46,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 //routes
+app.use("/api/doc/v1", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/users", usersRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/companies", companiesRouter);
