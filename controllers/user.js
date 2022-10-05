@@ -5,6 +5,7 @@ const tokenList = {};
 const cookieParser = require("cookie-parser");
 
 exports.addUser = async (req, res, next) => {
+  //** add account verification
   await Address.findOne({
     country: req.body.address.country,
     city: req.body.address.city,
@@ -26,8 +27,9 @@ exports.addUser = async (req, res, next) => {
             console.error(error);
             return res.status(403).json({ err: error });
           });
-      } else
-        return res.status(403).json({ err: "Wrong Address", address: data });
+      }
+      // create address, then create user with the id of created address
+      else return res.status(403).json({ err: "Wrong Address", address: data });
     })
     .catch((err) => {
       console.error(err);
@@ -115,9 +117,7 @@ exports.deleteUserId = (req, res, next) => {
 };
 exports.login = (req, res, next) => {
   User.findOne(
-    {
-      username: req.body.username,
-    },
+    { $or: [{ username: req.body.login }, { email: req.body.login }] },
     (err, user) => {
       if (err) throw err;
       if (!user) {

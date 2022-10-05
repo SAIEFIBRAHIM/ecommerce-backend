@@ -13,6 +13,15 @@ var swaggerJsDoc = require("swagger-jsdoc");
 var swaggerUi = require("swagger-ui-express");
 
 require("dotenv").config();
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.setHeader("Access-Control-Allow-Methods", "*");
+
+  next();
+});
+
 //Mongoose Connect
 mongoose
   .connect(dbConfig.database)
@@ -31,7 +40,10 @@ const options = {
     },
     servers: [
       {
-        url: "localhost:1337",
+        url: "http://localhost:1337",
+      },
+      {
+        url: "http://localhost:3000",
       },
     ],
   },
