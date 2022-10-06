@@ -33,11 +33,14 @@ exports.addManyAddress = (req, res, next) => {
 };
 exports.getCities = (req, res, next) => {
   const { country } = req.params;
-  Address.find({
-    country: `${country.charAt(0).toUpperCase()}${country
-      .slice(1)
-      .toLowerCase()}`,
-  })
+  Address.find(
+    {
+      country: `${country.charAt(0).toUpperCase()}${country
+        .slice(1)
+        .toLowerCase()}`,
+    },
+    { city: true, road: true }
+  )
     .then((data) => {
       return res
         .status(200)
@@ -50,12 +53,15 @@ exports.getCities = (req, res, next) => {
 };
 exports.getRoads = (req, res, next) => {
   const { country, city } = req.params;
-  Address.find({
-    country: `${country.charAt(0).toUpperCase()}${country
-      .slice(1)
-      .toLowerCase()}`,
-    city: `${city.charAt(0).toUpperCase()}${city.slice(1).toLowerCase()}`,
-  })
+  Address.find(
+    {
+      country: `${country.charAt(0).toUpperCase()}${country
+        .slice(1)
+        .toLowerCase()}`,
+      city: `${city.charAt(0).toUpperCase()}${city.slice(1).toLowerCase()}`,
+    },
+    { road: true }
+  )
     .then((data) => {
       return res
         .status(200)

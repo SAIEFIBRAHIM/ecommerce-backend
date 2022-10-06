@@ -5,7 +5,7 @@ const tokenList = {};
 const cookieParser = require("cookie-parser");
 
 exports.addUser = async (req, res, next) => {
-  //** add account verification
+  //! add account verification
   await Address.findOne({
     country: req.body.address.country,
     city: req.body.address.city,
