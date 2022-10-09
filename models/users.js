@@ -48,7 +48,10 @@ const UserSchema = new Schema({
     type: mongoose.Types.ObjectId,
     ref: "Address",
   },
-  verification: { type: Boolean, default: false },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
   created_at: {
     type: Date,
     default: Date.now(),

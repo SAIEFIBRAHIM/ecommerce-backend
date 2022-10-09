@@ -32,7 +32,7 @@ mongoose
 
 const options = {
   definition: {
-    openapi: "3.0.0",
+    openapi: "3.0.1",
     info: {
       title: "Ecommerce API",
       version: "1.0.0",
@@ -40,10 +40,21 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:1337",
-      },
-      {
         url: "http://localhost:3000",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },

@@ -1,12 +1,11 @@
 const jwt = require("jsonwebtoken");
-var cookieParser = require("cookie-parser");
-
 module.exports = (req, res, next) => {
-  if (!req.cookies.token) {
-    return res.status(401).send("Unauthorized access");
+  if (!req.headers.authorization) {
+    return res.status(403).send("Bearer token is required for authentication");
   }
+  const token = req.headers.authorization.split(" ")[1];
   try {
-    const decoded = jwt.verify(req.cookies.token, process.env.TOKEN_KEY);
+    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
     req.decoded = decoded;
   } catch (err) {
     return res.status(403).send("Invalid Token");

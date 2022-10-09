@@ -114,7 +114,7 @@ router.get("/:id", addressCtrl.getAddressId);
 router.get("/country/:country", addressCtrl.getCities);
 
 /**
- * @swagger
+@swagger
  * /api/address/country/{country}/city/{city}:
  *  get:
  *      summary: Get addresses by country name
@@ -145,6 +145,53 @@ router.get("/country/:country", addressCtrl.getCities);
  */
 
 router.get("/country/:country/city/:city", addressCtrl.getRoads);
+
+/**
+ * @swagger
+ * /api/address:
+ *  post:
+ *    summary: Add a new address
+ *    tags: [Address]
+ *    parameters:
+ *      - name: Country
+ *        description: Country of the new address
+ *        in: body
+ *        required: true
+ *        type: string
+ *        example: Tunisia
+ *      - name: "City"
+ *        description: City of the new address
+ *        in: body
+ *        required: true
+ *        type: string
+ *        example: Sfax
+ *      - name: Road
+ *        description: Road of the new address
+ *        in: body
+ *        required: true
+ *        type: string
+ *        example: Centre Ville
+ *    responses:
+ *      201:
+ *        description: New address created
+ *        schema:
+ *          type: object
+ *          properties:
+ *            success:
+ *              description: New address created
+ *              type: boolean
+ *              example: true
+ *      400:
+ *        description: Please check provided values
+ *        schema:
+ *          type: object
+ *          properties:
+ *            success:
+ *              description: Please check provided values
+ *              type: boolean
+ *              example: false
+ */
+
 router.post("/", auth, addressCtrl.addOneAddress);
 router.post("/many", auth, addressCtrl.addManyAddress);
 router.put("/:id", auth, addressCtrl.updateAddressId);

@@ -2,8 +2,7 @@ const User = require("../models/users");
 const Address = require("../models/address");
 const jwt = require("jsonwebtoken");
 const tokenList = {};
-const cookieParser = require("cookie-parser");
-
+const verifyEmail = require("../config/verifyemail");
 exports.addUser = async (req, res, next) => {
   //! add account verification
   await Address.findOne({
@@ -16,10 +15,15 @@ exports.addUser = async (req, res, next) => {
         var user = new User({ ...req.body, address: data._id });
         user
           .save()
-          .then((result) => {
+          .then(async (result) => {
+            const token = jwt.sign(result.toJSON(), process.env.TOKEN_KEY, {
+              expiresIn: process.env.TOKEN_LIFE,
+            });
+            await verifyEmail(result.email, result.first_name, token);
             return res.status(201).json({
               success: true,
               msg: "Successful created new User",
+              hint: "verification link sent to your email",
               data: result,
             });
           })
@@ -139,19 +143,6 @@ exports.login = (req, res, next) => {
                 expiresIn: process.env.REFRESH_TOKEN_LIFE,
               }
             );
-            res.cookie("username", user.username, {
-              httpOnly: true,
-              maxAge: 1000 * 60 * 60 * 24 * 7,
-            });
-            res.cookie("token", token, {
-              httpOnly: true,
-              maxAge: 1000 * 60 * 60 * 24 * 7,
-            });
-
-            res.cookie("refreshToken", refreshToken, {
-              httpOnly: true,
-              maxAge: 1000 * 60 * 60 * 24 * 7,
-            });
             const response = {
               status: "Logged in",
               token: token,
@@ -176,10 +167,14 @@ exports.login = (req, res, next) => {
   );
 };
 exports.token = (req, res, next) => {
-  if (req.cookies.refreshToken && req.cookies.refreshToken in tokenList) {
+  if (req.body.refreshToken && req.body.refreshToken in tokenList) {
+    const userVerification = jwt.verify(
+      req.body.refreshToken,
+      process.env.REFRESH_TOKEN_KEY
+    );
     User.findOne(
       {
-        username: req.cookies.username,
+        username: userVerification.username,
       },
       (err, user) => {
         if (err) throw err;
@@ -192,16 +187,36 @@ exports.token = (req, res, next) => {
           const token = jwt.sign(user.toJSON(), process.env.TOKEN_KEY, {
             expiresIn: process.env.TOKEN_LIFE,
           });
-          res.cookie("token", token, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 30,
-          });
-          tokenList[req.cookies.refreshToken].token = token;
+          tokenList[req.body.refreshToken].token = token;
           res.status(200).json({ token: token });
         }
       }
     );
   } else {
     res.status(404).send("Invalid request");
+  }
+};
+exports.verifyUser = async (req, res, next) => {
+  const userVerification = jwt.verify(req.params.token, process.env.TOKEN_KEY);
+  if (userVerification.verified) {
+    return res
+      .status(200)
+      .json({ msg: "Already verified", data: userVerification });
+  } else {
+    User.findByIdAndUpdate(
+      {
+        _id: userVerification._id,
+      },
+      { verified: true }
+    )
+      .then((data) => {
+        console.log("User Verified");
+        return res.status(200).json({ success: true, data: data });
+      })
+
+      .catch((err) => {
+        console.error(err);
+        return res.status(404).json({ err: "No User Found" });
+      });
   }
 };

@@ -9,5 +9,6 @@ router.put("/:id", auth, userCtrl.updateUserId);
 router.delete("/:id", auth, userCtrl.deleteUserId);
 router.post("/login", userCtrl.login);
 router.post("/token", userCtrl.token);
+router.put("/verify/:token", auth, userCtrl.verifyUser);
 
 module.exports = router;
