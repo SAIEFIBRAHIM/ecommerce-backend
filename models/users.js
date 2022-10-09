@@ -52,6 +52,12 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  verify_token: {
+    type: String,
+  },
+  passreset_token: {
+    type: String,
+  },
   created_at: {
     type: Date,
     default: Date.now(),
