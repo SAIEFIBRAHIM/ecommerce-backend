@@ -3,6 +3,7 @@ const Address = require("../models/address");
 const jwt = require("jsonwebtoken");
 const tokenList = {};
 const verifyEmail = require("../config/verifyemail");
+const resetPassEmail = require("../config/resetpassemail");
 exports.addUser = async (req, res, next) => {
   await Address.findOne({
     country: req.body.address.country,
@@ -263,37 +264,68 @@ exports.verifyUser = async (req, res, next) => {
           console.error(err);
           return res.status(404).json({ err: "No User Found" });
         });
-    } else if (found.verify_token === "") {
-      return res.status(200).json({ msg: "Already verified" });
-    } else return res.status(404).json({ err: "Verification token Time Out" });
+    } else
+      return res.status(400).json({
+        err: "Verification token time out, Request for a new verification link",
+      });
   });
 };
 exports.forgetPass = (req, res, next) => {
   User.findOne({
-    $or: [{ username: req.params.login }, { email: req.params.login }],
+    $or: [{ username: req.query.login }, { email: req.query.login }],
   })
     .then((data) => {
-      verifyEmail(data.email, data.first_name);
-      return res.status(200).json({
-        success: true,
-        msg: "Password reset link sent to your email address",
+      const resetToken = jwt.sign(data.toJSON(), process.env.VERIFY_TOKEN_KEY, {
+        expiresIn: 60 * 30,
       });
+      User.findByIdAndUpdate(data._id, { pass_reset_token: resetToken }).then(
+        (result) => {
+          verifyEmail(
+            result.email,
+            result.first_name,
+            req.query.login,
+            resetToken
+          );
+          return res.status(200).json({
+            success: true,
+            reset_token: resetToken,
+            msg: "Password reset link sent to your email address",
+          });
+        }
+      );
     })
     .catch((err) => {
       console.log(err);
       return res.status(404).json({ err: err });
     });
 };
-exports.resetPass = (req, res, next) => {
-  User.findOne({
-    $or: [{ username: req.params.login }, { email: req.params.login }],
+exports.resetPass = async (req, res, next) => {
+  const resetVerify = jwt.verify(req.query.token, process.env.VERIFY_TOKEN_KEY);
+  await User.findOne({
+    $or: [{ username: req.query.login }, { email: req.query.login }],
   })
     .then((data) => {
-      verifyEmail(data.email, data.first_name);
-      return res.status(200).json({
-        success: true,
-        msg: "Password reset link sent to your email address",
-      });
+      if (
+        resetVerify.exp * 1000 > Date.now() &&
+        req.query.token === data.pass_reset_token
+      ) {
+        User.findByIdAndUpdate(resetVerify._id, {
+          password: req.body.new_password,
+        })
+          .then((result) => {
+            return res.status(200).json({
+              success: true,
+              data: result,
+            });
+          })
+          .catch((error) => {
+            console.log(err);
+          });
+      } else {
+        res
+          .status(403)
+          .json({ error: "Token expired request for password again" });
+      }
     })
     .catch((err) => {
       console.log(err);
