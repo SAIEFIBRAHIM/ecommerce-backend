@@ -12,7 +12,7 @@ exports.addUser = async (req, res, next) => {
   })
     .then(async (data) => {
       if (data) {
-        var user = new User({ ...req.body, address: data._id });
+        const user = new User({ ...req.body, address: data._id });
         user
           .save()
           .then(async (result) => {
@@ -237,38 +237,42 @@ exports.requestVerify = async (req, res, next) => {
 };
 exports.verifyUser = async (req, res, next) => {
   const userVerification = jwt.verify(
-    req.query.token,
+    req.query.verify_token,
     process.env.VERIFY_TOKEN_KEY
   );
   if (userVerification.verified) {
     return res.status(200).json({ msg: "Already verified" });
   }
-  await User.findOne({ username: req.query.username }).then((found) => {
-    if (
-      userVerification.exp * 1000 > Date.now() &&
-      req.query.token === found.verify_token
-    ) {
-      console.log(userVerification.exp * 1000, Date.now(), "error here");
-      User.findByIdAndUpdate(
-        {
-          _id: userVerification._id,
-        },
-        { verified: true, verify_token: "" }
-      )
-        .then((data) => {
-          console.log("User Verified");
-          return res.status(200).json({ success: true, data: data });
-        })
-
-        .catch((err) => {
-          console.error(err);
-          return res.status(404).json({ err: "No User Found" });
+  await User.findOne({ username: req.query.username })
+    .then((found) => {
+      if (userVerification.exp * 1000 < Date.now()) {
+        return res.status(400).json({
+          err: "Verification token time out, Request for a new verification link",
         });
-    } else
-      return res.status(400).json({
-        err: "Verification token time out, Request for a new verification link",
-      });
-  });
+      } else if (req.query.verify_token === found.verify_token) {
+        found.verified = true;
+        found.verify_token = undefined;
+        found
+          .save()
+          .then((data) => {
+            console.log("User Verified");
+            return res.status(200).json({ success: true, data: data });
+          })
+
+          .catch((err) => {
+            console.error(err);
+            return res.status(404).json({ err: err });
+          });
+      } else {
+        return res
+          .status(400)
+          .json({ error: "Something went wrong try again please" });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(400).json({ error: error });
+    });
 };
 exports.forgetPass = (req, res, next) => {
   User.findOne({
@@ -300,35 +304,39 @@ exports.forgetPass = (req, res, next) => {
     });
 };
 exports.resetPass = async (req, res, next) => {
-  const resetVerify = jwt.verify(req.query.token, process.env.VERIFY_TOKEN_KEY);
-  await User.findOne({
-    $or: [{ username: req.query.login }, { email: req.query.login }],
-  })
-    .then((data) => {
-      if (
-        resetVerify.exp * 1000 > Date.now() &&
-        req.query.token === data.pass_reset_token
-      ) {
-        User.findByIdAndUpdate(resetVerify._id, {
-          password: req.body.new_password,
-        })
+  const resetVerify = jwt.verify(
+    await req.query.reset_token,
+    process.env.VERIFY_TOKEN_KEY
+  );
+  await User.findById(resetVerify._id)
+    .then(async (data) => {
+      if (resetVerify.exp * 1000 < Date.now()) {
+        res
+          .status(403)
+          .json({ error: "Token expired request for password again" });
+      } else if (req.query.reset_token === data.pass_reset_token) {
+        data.password = req.body.password;
+        data.updated_at = Date.now();
+        data.pass_reset_token = undefined;
+        await data
+          .save()
           .then((result) => {
             return res.status(200).json({
               success: true,
               data: result,
             });
           })
-          .catch((error) => {
+          .catch((err) => {
             console.log(err);
           });
       } else {
         res
           .status(403)
-          .json({ error: "Token expired request for password again" });
+          .json({ error: "Something went wrong try again please" });
       }
     })
-    .catch((err) => {
-      console.log(err);
-      return res.status(404).json({ err: err });
+    .catch((error) => {
+      console.log(error);
+      return res.status(404).json({ err: error });
     });
 };
