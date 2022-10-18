@@ -487,7 +487,7 @@ const verifyEmail = async (to, fname, username, token) => {
                                                                                     "
                                                                                   >
                                                                                     <a
-                                                                                      href="${process.env.BASE_URL}/api/users/verify/account/${username}/${token}"
+                                                                                      href="${process.env.BASE_URL}/api/users/verify/account?username=${username}?verify_token=${token}"
                                                                                       style="
                                                                                         background-color: #ffbe00;
                                                                                         border: 1px

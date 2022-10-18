@@ -10,7 +10,7 @@ router.delete("/:id", auth, userCtrl.deleteUserId);
 router.post("/login", userCtrl.login);
 router.post("/token", userCtrl.token);
 router.post("/verify/account", auth, userCtrl.requestVerify);
-router.put("/verify/account", userCtrl.verifyUser);
+router.get("/verify/account", userCtrl.verifyUser);
 router.post("/reset/password", userCtrl.forgetPass);
 router.put("/reset/password", userCtrl.resetPass);
 

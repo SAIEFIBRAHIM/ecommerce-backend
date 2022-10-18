@@ -256,7 +256,7 @@ exports.verifyUser = async (req, res, next) => {
           .save()
           .then((data) => {
             console.log("User Verified");
-            return res.status(200).json({ success: true, data: data });
+            return res.status(200).send({ verified: true, data: data });
           })
 
           .catch((err) => {
@@ -320,6 +320,16 @@ exports.resetPass = async (req, res, next) => {
         data.pass_reset_token = undefined;
         await data
           .save()
+          // const user = new Object();
+          // user.password = req.body.password;
+          // User.findOneAndUpdate({ _id: data._id }, user)
+          //   .then((result) => {
+          //     User.updateOne(
+          //       { _id: data._id },
+          //       {
+          //         $unset: { pass_reset_token: 1 },
+          //       }
+          //     )
           .then((result) => {
             return res.status(200).json({
               success: true,

@@ -91,6 +91,30 @@ UserSchema.pre("save", function (next) {
   }
 });
 
+// UserSchema.pre(
+//   "findOneAndUpdate",
+//   { document: true, query: false },
+//   function (next) {
+//     var updatedUser = this;
+//     if (this.isModified("password")) {
+//       bcrypt.genSalt(10, function (err, salt) {
+//         if (err) {
+//           return next(err);
+//         }
+//         bcrypt.hash(updatedUser.password, salt, null, function (err, hash) {
+//           if (err) {
+//             return next(err);
+//           }
+//           this.set({ password: hash, updated_at: Date.now() });
+//           next();
+//         });
+//       });
+//     } else {
+//       return next();
+//     }
+//   }
+// );
+
 UserSchema.methods.comparePassword = function (passw, cb) {
   bcrypt.compare(passw, this.password, function (err, isMatch) {
     if (err) {

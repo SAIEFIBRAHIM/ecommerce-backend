@@ -5,12 +5,14 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var swaggerJsDoc = require("swagger-jsdoc");
+var swaggerUi = require("swagger-ui-express");
 var dbConfig = require("./config/database");
+
 var usersRouter = require("./routes/users");
 var addressRouter = require("./routes/address");
 var companiesRouter = require("./routes/companies");
-var swaggerJsDoc = require("swagger-jsdoc");
-var swaggerUi = require("swagger-ui-express");
+var filesRouter = require("./routes/files");
 
 require("dotenv").config();
 
@@ -73,6 +75,7 @@ app.use("/api/doc/v1", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/users", usersRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/companies", companiesRouter);
+app.use("/api/files", filesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
