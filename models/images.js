@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const FileSchema = new Schema({
+const ProductImgSchema = new Schema({
   name: {
     type: String,
     required: [true, "File name is required"],
@@ -32,4 +32,4 @@ const FileSchema = new Schema({
     default: null,
   },
 });
-module.exports = mongoose.model("File", FileSchema);
+module.exports = mongoose.model("ProductImg", ProductImgSchema);

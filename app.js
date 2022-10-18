@@ -8,11 +8,12 @@ var mongoose = require("mongoose");
 var swaggerJsDoc = require("swagger-jsdoc");
 var swaggerUi = require("swagger-ui-express");
 var dbConfig = require("./config/database");
+const multer = require("multer");
 
 var usersRouter = require("./routes/users");
 var addressRouter = require("./routes/address");
 var companiesRouter = require("./routes/companies");
-var filesRouter = require("./routes/files");
+var imagesRouter = require("./routes/images");
 
 require("dotenv").config();
 
@@ -23,7 +24,6 @@ app.use((req, res, next) => {
 
   next();
 });
-
 //Mongoose Connect
 mongoose
   .connect(dbConfig.database)
@@ -71,11 +71,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 //routes
+
 app.use("/api/doc/v1", swaggerUi.serve, swaggerUi.setup(specs));
+app.use("/api/images", imagesRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/companies", companiesRouter);
-app.use("/api/files", filesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
