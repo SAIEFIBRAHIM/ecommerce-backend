@@ -1,22 +1,22 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const ProductImgSchema = new Schema({
-  name: {
-    type: String,
-    required: [true, "File name is required"],
-  },
-  file_url: {
+const ImagesSchema = new Schema({
+  fileName: {
     type: String,
     required: true,
   },
-  user_id: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
+  filePath: {
+    type: String,
+    required: true,
   },
-  comments: [
+  fileType: {
+    type: String,
+    required: true,
+  },
+  fileSize: [
     {
-      type: mongoose.Types.ObjectId,
-      ref: "Comment",
+      type: String,
+      required: true,
     },
   ],
   created_at: {
@@ -32,4 +32,4 @@ const ProductImgSchema = new Schema({
     default: null,
   },
 });
-module.exports = mongoose.model("ProductImg", ProductImgSchema);
+module.exports = mongoose.model("Images", ImagesSchema);

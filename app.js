@@ -8,8 +8,6 @@ var mongoose = require("mongoose");
 var swaggerJsDoc = require("swagger-jsdoc");
 var swaggerUi = require("swagger-ui-express");
 var dbConfig = require("./config/database");
-const multer = require("multer");
-
 var usersRouter = require("./routes/users");
 var addressRouter = require("./routes/address");
 var companiesRouter = require("./routes/companies");
