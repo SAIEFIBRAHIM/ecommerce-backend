@@ -13,12 +13,10 @@ const ImagesSchema = new Schema({
     type: String,
     required: true,
   },
-  fileSize: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
+  fileSize: {
+    type: String,
+    required: true,
+  },
   created_at: {
     type: Date,
     default: Date.now(),
