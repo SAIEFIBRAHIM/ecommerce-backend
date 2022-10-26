@@ -6,7 +6,7 @@ const validator = require("validator");
 const UserSchema = new Schema({
   username: {
     type: String,
-    required: [true, "username field is required"],
+    required: [true, "Username field is required"],
     unique: true,
   },
   email: {
@@ -21,15 +21,15 @@ const UserSchema = new Schema({
   },
   password: {
     type: String,
-    required: [true, "password field is required"],
+    required: [true, "Password field is required"],
   },
   first_name: {
     type: String,
-    required: [true, "fist_name field is required"],
+    required: [true, "First name field is required"],
   },
   last_name: {
     type: String,
-    required: [true, "last_name field is required"],
+    required: [true, "Last Name field is required"],
   },
   gender: {
     type: String,
@@ -37,7 +37,7 @@ const UserSchema = new Schema({
   },
   phone: {
     type: Number,
-    required: [true, "phone field is required"],
+    required: [true, "Phone field is required"],
   },
   role: {
     type: String,

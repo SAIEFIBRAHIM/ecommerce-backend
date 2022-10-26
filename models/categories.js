@@ -1,13 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const CommentSchema = new Schema({
-  content: {
+const CategoriesSchema = new Schema({
+  name: {
     type: String,
-    required: [true, "Comment content is required"],
-  },
-  user_id: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
+    required: [true, "Name is required"],
   },
   created_at: {
     type: Date,
@@ -22,4 +18,4 @@ const CommentSchema = new Schema({
     default: null,
   },
 });
-module.exports = mongoose.model("Comment", CommentSchema);
+module.exports = mongoose.model("Categories", CategoriesSchema);

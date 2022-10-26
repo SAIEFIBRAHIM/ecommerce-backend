@@ -10,8 +10,9 @@ var swaggerUi = require("swagger-ui-express");
 var dbConfig = require("./config/database");
 var usersRouter = require("./routes/users");
 var addressRouter = require("./routes/address");
-var companiesRouter = require("./routes/companies");
 var imagesRouter = require("./routes/images");
+var productsRouter = require("./routes/products");
+var categoriesRouter = require("./routes/categories");
 
 require("dotenv").config();
 
@@ -75,7 +76,8 @@ app.use("/api/doc/v1", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/images", imagesRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/address", addressRouter);
-app.use("/api/companies", companiesRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/categories", categoriesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
