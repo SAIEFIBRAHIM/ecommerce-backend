@@ -53,26 +53,80 @@ exports.addProduct = async (req, res, next) => {
   });
 };
 exports.getAllProducts = (req, res, next) => {
-  Products.find()
-    .then((data) => {
-      res
-        .status(200)
-        .json({ success: true, products: data.length, data: data });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json({ success: false, error: err });
-    });
+  if (req.query.populate === "images") {
+    Products.find()
+      .populate("images")
+      .then((data) => {
+        res
+          .status(200)
+          .json({ success: true, products: data.length, data: data });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ success: false, error: err });
+      });
+  } else if (req.query.populate === "categories") {
+    Products.find()
+      .populate("categories")
+      .then((data) => {
+        res
+          .status(200)
+          .json({ success: true, products: data.length, data: data });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ success: false, error: err });
+      });
+  } else {
+    Products.find()
+      .then((data) => {
+        res
+          .status(200)
+          .json({ success: true, products: data.length, data: data });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ success: false, error: err });
+      });
+  }
 };
 exports.getProduct = (req, res, next) => {
-  Products.findById(req.params.id)
-    .then((data) => {
-      res.status(200).json({ success: true, data: data });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(200).json({ success: false, error: err });
-    });
+  if (req.query.populate === "images") {
+    Products.findById(req.params.id)
+      .populate("images")
+      .then((data) => {
+        res
+          .status(200)
+          .json({ success: true, products: data.length, data: data });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ success: false, error: err });
+      });
+  } else if (req.query.populate === "categories") {
+    Products.findById(req.params.id)
+      .populate("categories")
+      .then((data) => {
+        res
+          .status(200)
+          .json({ success: true, products: data.length, data: data });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ success: false, error: err });
+      });
+  } else {
+    Products.findById(req.params.id)
+      .then((data) => {
+        res
+          .status(200)
+          .json({ success: true, products: data.length, data: data });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ success: false, error: err });
+      });
+  }
 };
 exports.updateProductImages = async (req, res, next) => {
   if (!req.files) {
@@ -96,7 +150,7 @@ exports.updateProductImages = async (req, res, next) => {
     images: filesArray,
   })
     .then((result) => {
-      res.status(201).json({ success: true, data: result });
+      res.status(200).json({ success: true, data: result });
     })
     .catch((err) => {
       console.log(err);
@@ -115,7 +169,7 @@ exports.updateProductDetails = async (req, res, next) => {
         categories: catArray,
       })
         .then((result) => {
-          res.status(201).json({ success: true, data: result });
+          res.status(200).json({ success: true, data: result });
         })
         .catch((error) => {
           console.log(error);
@@ -124,7 +178,7 @@ exports.updateProductDetails = async (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status(400).json({ success: false, error: error });
+      res.status(400).json({ success: false, error: err });
     });
 };
 exports.deleteProduct = (req, res, next) => {
@@ -134,9 +188,16 @@ exports.deleteProduct = (req, res, next) => {
     })
     .catch((error) => {
       console.log(error);
-      res.status(400).json({ deleted: false });
+      res.status(400).json({ deleted: false, error: error });
     });
 };
 exports.deleteManyProducts = (req, res, next) => {
-  Products.deleteMany({ _id: req.body.products });
+  Products.deleteMany({ _id: { $in: req.body } })
+    .then((data) => {
+      res.status(200).json({});
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(400).json({ deleted: false, error: error });
+    });
 };

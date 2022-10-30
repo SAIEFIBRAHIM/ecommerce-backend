@@ -124,7 +124,7 @@ exports.updateUserId = (req, res, next) => {
 exports.deleteUserId = (req, res, next) => {
   User.findByIdAndDelete(req.params.id)
     .then((result) => {
-      return res.status(200).json({ delete: true, data: result });
+      return res.status(200).json({ deleted: true });
     })
 
     .catch((err) => {
