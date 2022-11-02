@@ -13,6 +13,8 @@ var addressRouter = require("./routes/address");
 var imagesRouter = require("./routes/images");
 var productsRouter = require("./routes/products");
 var categoriesRouter = require("./routes/categories");
+var ordersRouter = require("./routes/orders");
+var ticketsRouter = require("./routes/tickets");
 
 require("dotenv").config();
 
@@ -78,6 +80,8 @@ app.use("/api/users", usersRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
+app.use("/api/orders", ordersRouter);
+app.use("/api/tickets", ticketsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
