@@ -42,7 +42,7 @@ const options = {
     openapi: "3.0.1",
     info: {
       title: "Ecommerce API",
-      version: "1.0.0",
+      version: "1.1.0",
       description: "REST API documentation",
     },
     servers: [
@@ -53,7 +53,7 @@ const options = {
     components: {
       securitySchemes: {
         bearerAuth: {
-          type: "http",
+          type: "https",
           scheme: "bearer",
           bearerFormat: "JWT",
         },
