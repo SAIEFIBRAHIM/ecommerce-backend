@@ -18,6 +18,10 @@ var ticketsRouter = require("./routes/tickets");
 
 require("dotenv").config();
 
+// set the view engine to ejs
+app.set("view engine", "ejs");
+
+// CROS access setup
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "*");
@@ -32,7 +36,7 @@ mongoose
     console.log("db cluster connected");
   })
   .catch((err) => console.error(err));
-
+// swagger ui options
 const options = {
   definition: {
     openapi: "3.0.1",
@@ -73,7 +77,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(process.cwd() + "/images"));
 
 //routes
-
+// index page
+app.get("/", function (req, res) {
+  res.render("pages/index");
+});
 app.use("/api/doc/v1", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/images", imagesRouter);
 app.use("/api/users", usersRouter);
