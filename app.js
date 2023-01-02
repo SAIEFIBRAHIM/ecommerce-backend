@@ -47,12 +47,21 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:1337",
+        url: "http://localhost:3000",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
       },
     },
     security: [
       {
-        url: "http://localhost:3000",
+        bearerAuth: [],
       },
     ],
   },
