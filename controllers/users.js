@@ -40,7 +40,6 @@ exports.addUser = async (req, res, next) => {
             });
           })
           .catch((error) => {
-            console.error(error);
             return res.status(403).json({ error: error });
           });
       }
@@ -108,7 +107,6 @@ exports.updateUserId = (req, res, next) => {
           return res.status(200).json({ success: true, data: result });
         })
         .catch((error) => {
-          console.error(error);
           return res.status(404).json({ error: error });
         });
     })
