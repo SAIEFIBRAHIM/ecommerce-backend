@@ -17,7 +17,6 @@ const fileSizeFormatter = (bytes, decimal) => {
 
 exports.addProduct = async (req, res, next) => {
   if (!req.files) {
-    console.log("No File provided");
     return res.status(400).send("No File provided");
   }
   const filesArray = [];
@@ -47,7 +46,6 @@ exports.addProduct = async (req, res, next) => {
         res.status(201).json({ success: true, data: result });
       })
       .catch((error) => {
-        console.log(error);
         res.status(400).json({ success: false, error: error });
       });
   });
@@ -62,7 +60,6 @@ exports.getAllProducts = (req, res, next) => {
           .json({ success: true, products: data.length, data: data });
       })
       .catch((err) => {
-        console.log(err);
         res.status(400).json({ success: false, error: err });
       });
   } else if (req.query.populate === "categories") {
@@ -74,7 +71,6 @@ exports.getAllProducts = (req, res, next) => {
           .json({ success: true, products: data.length, data: data });
       })
       .catch((err) => {
-        console.log(err);
         res.status(400).json({ success: false, error: err });
       });
   } else {
@@ -85,7 +81,6 @@ exports.getAllProducts = (req, res, next) => {
           .json({ success: true, products: data.length, data: data });
       })
       .catch((err) => {
-        console.log(err);
         res.status(400).json({ success: false, error: err });
       });
   }
@@ -100,7 +95,6 @@ exports.getProduct = (req, res, next) => {
           .json({ success: true, products: data.length, data: data });
       })
       .catch((err) => {
-        console.log(err);
         res.status(400).json({ success: false, error: err });
       });
   } else if (req.query.populate === "categories") {
@@ -112,7 +106,6 @@ exports.getProduct = (req, res, next) => {
           .json({ success: true, products: data.length, data: data });
       })
       .catch((err) => {
-        console.log(err);
         res.status(400).json({ success: false, error: err });
       });
   } else {
@@ -123,14 +116,12 @@ exports.getProduct = (req, res, next) => {
           .json({ success: true, products: data.length, data: data });
       })
       .catch((err) => {
-        console.log(err);
         res.status(400).json({ success: false, error: err });
       });
   }
 };
 exports.updateProductImages = async (req, res, next) => {
   if (!req.files) {
-    console.log("No File provided");
     return res.status(400).send("No File provided");
   }
   const filesArray = [];
@@ -153,7 +144,6 @@ exports.updateProductImages = async (req, res, next) => {
       res.status(200).json({ success: true, data: result });
     })
     .catch((err) => {
-      console.log(err);
       res.status(400).json({ success: false, error: err });
     });
 };
@@ -172,12 +162,10 @@ exports.updateProductDetails = async (req, res, next) => {
           res.status(200).json({ success: true, data: result });
         })
         .catch((error) => {
-          console.log(error);
           res.status(400).json({ success: false, error: error });
         });
     })
     .catch((err) => {
-      console.log(err);
       res.status(400).json({ success: false, error: err });
     });
 };
@@ -187,7 +175,6 @@ exports.deleteProduct = (req, res, next) => {
       res.status(200).json({ deleted: true, product: data._id });
     })
     .catch((error) => {
-      console.log(error);
       res.status(400).json({ deleted: false, error: error });
     });
 };
@@ -197,7 +184,6 @@ exports.deleteManyProducts = (req, res, next) => {
       res.status(200).json({});
     })
     .catch((error) => {
-      console.log(error);
       res.status(400).json({ deleted: false, error: error });
     });
 };

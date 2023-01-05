@@ -9,7 +9,6 @@ exports.addTicket = (req, res, next) => {
       res.status(201).json({ success: true, data: data });
     })
     .catch((error) => {
-      console.log(error);
       res.status(400).json({ success: false, err: error });
     });
 };
@@ -19,7 +18,6 @@ exports.getAllTickets = (req, res, next) => {
       res.status(200).json({ success: true, data: data });
     })
     .catch((error) => {
-      console.log(error);
       res.status(400).json({ success: false, err: error });
     });
 };
@@ -29,7 +27,6 @@ exports.getTicket = (req, res, next) => {
       res.status(200).json({ success: true, data: data });
     })
     .catch((error) => {
-      console.log(error);
       res.status(400).json({ success: false, err: error });
     });
 };
@@ -41,13 +38,11 @@ exports.getOwnAllTickets = async (req, res, next) => {
           res.status(200).json({ success: true, data: result });
         })
         .catch((err) => {
-          console.log(err);
-          res.status(400).json({ success: false, err: err });
+          res.status(400).json({ success: false, error: err });
         });
     })
     .catch((error) => {
-      console.log(error);
-      res.status(400).json({ success: false, err: error });
+      res.status(400).json({ success: false, error: error });
     });
 };
 exports.getOwnTicket = async (req, res, next) => {
@@ -65,13 +60,11 @@ exports.getOwnTicket = async (req, res, next) => {
           }
         })
         .catch((pob) => {
-          console.log(pob);
-          res.status(400).json({ success: false, err: pob });
+          res.status(400).json({ success: false, error: pob });
         });
     })
     .catch((error) => {
-      console.log(error);
-      res.status(400).json({ success: false, err: error });
+      res.status(400).json({ success: false, error: error });
     });
 };
 exports.updateTicket = (req, res, next) => {
@@ -80,8 +73,7 @@ exports.updateTicket = (req, res, next) => {
       res.status(200).json({ success: true, data: data });
     })
     .catch((error) => {
-      console.log(error);
-      res.status(400).json({ success: false, err: error });
+      res.status(400).json({ success: false, error: error });
     });
 };
 exports.updateOwnTicket = async (req, res, next) => {
@@ -95,7 +87,6 @@ exports.updateOwnTicket = async (req, res, next) => {
                 res.status(200).json({ success: true, data: result });
               })
               .catch((err) => {
-                console.log(err);
                 res.status(400).json({ success: false, err: err });
               });
           } else {
@@ -106,13 +97,11 @@ exports.updateOwnTicket = async (req, res, next) => {
           }
         })
         .catch((pob) => {
-          console.log(pob);
-          res.status(400).json({ success: false, err: pob });
+          res.status(400).json({ success: false, error: pob });
         });
     })
     .catch((error) => {
-      console.log(error);
-      res.status(400).json({ success: false, err: error });
+      res.status(400).json({ success: false, error: error });
     });
 };
 
@@ -122,7 +111,6 @@ exports.deleteTicket = (req, res, next) => {
       res.status(200).json({ deleted: true });
     })
     .catch((error) => {
-      console.log(error);
-      res.status(400).json({ deleted: false, err: error });
+      res.status(400).json({ deleted: false, error: error });
     });
 };

@@ -41,15 +41,15 @@ exports.addUser = async (req, res, next) => {
           })
           .catch((error) => {
             console.error(error);
-            return res.status(403).json({ err: error });
+            return res.status(403).json({ error: error });
           });
       }
       // create address, then create user with the id of created address
-      else return res.status(403).json({ err: "Wrong Address", address: data });
+      else
+        return res.status(403).json({ error: "Wrong Address", address: data });
     })
     .catch((err) => {
-      console.error(err);
-      return res.status(403).json({ err: err });
+      return res.status(403).json({ error: err });
     });
 };
 exports.getUsers = (req, res, next) => {
@@ -60,16 +60,14 @@ exports.getUsers = (req, res, next) => {
           return res.status(200).json({ success: true, data: data });
         })
         .catch((err) => {
-          console.error(err);
-          return res.status(403).json({ err: err });
+          return res.status(403).json({ error: err });
         })
     : User.find()
         .then((data) => {
           return res.status(200).json({ success: true, data: data });
         })
         .catch((err) => {
-          console.error(err);
-          return res.status(403).json({ err: err });
+          return res.status(403).json({ error: err });
         });
 };
 exports.getUserId = (req, res, next) => {
@@ -82,8 +80,7 @@ exports.getUserId = (req, res, next) => {
             : res.status(404).json({ success: false, data: "No User Found" });
         })
         .catch((err) => {
-          console.error(err);
-          return res.status(403).json({ err: err });
+          return res.status(403).json({ error: err });
         })
     : User.findById(req.params.id)
         .then((data) => {
@@ -92,8 +89,7 @@ exports.getUserId = (req, res, next) => {
             : res.status(404).json({ success: false, data: "No User Found" });
         })
         .catch((err) => {
-          console.error(err);
-          return res.status(403).json({ err: err });
+          return res.status(403).json({ error: err });
         });
 };
 exports.updateUserId = (req, res, next) => {
@@ -113,12 +109,11 @@ exports.updateUserId = (req, res, next) => {
         })
         .catch((error) => {
           console.error(error);
-          return res.status(404).json({ err: error });
+          return res.status(404).json({ error: error });
         });
     })
     .catch((err) => {
-      console.error(err);
-      return res.status(404).json({ err: "No User Found" });
+      return res.status(404).json({ error: "No User Found" });
     });
 };
 exports.deleteUserId = (req, res, next) => {
@@ -128,8 +123,7 @@ exports.deleteUserId = (req, res, next) => {
     })
 
     .catch((err) => {
-      console.error(err);
-      return res.status(404).json({ err: "No User Found" });
+      return res.status(404).json({ error: "No User Found" });
     });
 };
 exports.login = (req, res, next) => {
@@ -140,7 +134,7 @@ exports.login = (req, res, next) => {
       if (!user) {
         res.status(401).send({
           success: false,
-          msg: "Authentication failed. User not found.",
+          msg: "User not found",
         });
       } else {
         user.comparePassword(req.body.password, (err, isMatch) => {
@@ -168,7 +162,6 @@ exports.login = (req, res, next) => {
             tokenList[refreshToken] = response;
             res.status(200).json(response);
           } else {
-            console.log(err);
             res.status(401).send({
               success: false,
               msg: "Authentication failed. Wrong password.",
@@ -231,7 +224,7 @@ exports.requestVerify = async (req, res, next) => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        return res.status(400).json({ error: err });
       });
   });
 };
@@ -255,22 +248,19 @@ exports.verifyUser = async (req, res, next) => {
         found
           .save()
           .then((data) => {
-            console.log("User Verified");
             return res.status(200).send({ verified: true, data: data });
           })
 
           .catch((err) => {
-            console.error(err);
-            return res.status(404).json({ err: err });
+            return res.status(404).json({ error: err });
           });
       } else {
         return res
           .status(400)
-          .json({ error: "Something went wrong try again please" });
+          .json({ msg: "Something went wrong try again please" });
       }
     })
     .catch((error) => {
-      console.log(error);
       return res.status(400).json({ error: error });
     });
 };
@@ -299,8 +289,7 @@ exports.forgetPass = (req, res, next) => {
       );
     })
     .catch((err) => {
-      console.log(err);
-      return res.status(404).json({ err: err });
+      return res.status(404).json({ error: err });
     });
 };
 exports.resetPass = async (req, res, next) => {
@@ -320,16 +309,7 @@ exports.resetPass = async (req, res, next) => {
         data.pass_reset_token = undefined;
         await data
           .save()
-          // const user = new Object();
-          // user.password = req.body.password;
-          // User.findOneAndUpdate({ _id: data._id }, user)
-          //   .then((result) => {
-          //     User.updateOne(
-          //       { _id: data._id },
-          //       {
-          //         $unset: { pass_reset_token: 1 },
-          //       }
-          //     )
+
           .then((result) => {
             return res.status(200).json({
               success: true,
@@ -337,7 +317,7 @@ exports.resetPass = async (req, res, next) => {
             });
           })
           .catch((err) => {
-            console.log(err);
+            return res.status(400).json({ error: err });
           });
       } else {
         res
@@ -346,7 +326,6 @@ exports.resetPass = async (req, res, next) => {
       }
     })
     .catch((error) => {
-      console.log(error);
-      return res.status(404).json({ err: error });
+      return res.status(404).json({ error: error });
     });
 };

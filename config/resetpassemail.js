@@ -926,11 +926,8 @@ const resetPassEmail = async (to, fname, username, token) => {
     
       `,
     });
-    console.log("Email was send successfully");
-    console.log("Message sent: %s", info.messageId);
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
   } catch (err) {
-    console.log("Email not sent ", err);
+    return res.status(400).json({ msg: "Email not sent", error: err });
   }
 };
 module.exports = resetPassEmail;

@@ -7,7 +7,6 @@ exports.getAddress = (req, res, next) => {
         .json({ success: true, addresses: data.length, data: data });
     })
     .catch((err) => {
-      console.log(err);
       return res.status(404).json({ err: err });
     });
 };
@@ -17,7 +16,6 @@ exports.getAddressId = (req, res, next) => {
       return res.status(200).json({ success: true, data: data });
     })
     .catch((err) => {
-      console.log(err);
       return res.status(404).json({ err: err });
     });
 };
@@ -27,7 +25,6 @@ exports.addManyAddress = (req, res, next) => {
       return res.status(200).json({ success: true, data: data });
     })
     .catch((err) => {
-      console.log(err);
       return res.status(404).json({ err: err });
     });
 };
@@ -47,7 +44,6 @@ exports.getCities = (req, res, next) => {
         .json({ success: true, cities: data.length, data: data });
     })
     .catch((err) => {
-      console.log(err);
       return res.status(404).json({ err: err });
     });
 };
@@ -68,7 +64,6 @@ exports.getRoads = (req, res, next) => {
         .json({ success: true, found: data.length, data: data });
     })
     .catch((err) => {
-      console.log(err);
       return res.status(404).json({ err: err });
     });
 };
@@ -97,7 +92,6 @@ exports.updateAddressId = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
       return res.status(403).json({ err: err });
     });
 };
@@ -110,7 +104,6 @@ exports.deleteAddress = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
       return res.status(403).json({ err: err });
     });
 };
