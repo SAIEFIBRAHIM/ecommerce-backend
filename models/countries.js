@@ -16,9 +16,15 @@ const CountriesSchema = new Schema({
     type: String,
     required: [true, "Country currency field is required"],
   },
+  currency_name_ar: {
+    type: String,
+  },
   currency_symbol: {
     type: String,
     required: [true, "Country symbol field is required"],
+  },
+  currency_symbol_ar: {
+    type: String,
   },
   created_at: {
     type: Date,
