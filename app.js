@@ -1,3 +1,4 @@
+//modules
 var createError = require("http-errors");
 var express = require("express");
 var app = express();
@@ -8,8 +9,11 @@ var mongoose = require("mongoose");
 var swaggerJsDoc = require("swagger-jsdoc");
 var swaggerUi = require("swagger-ui-express");
 var dbConfig = require("./config/database");
+//routers
 var usersRouter = require("./routes/users");
-var addressRouter = require("./routes/addresses");
+var countriesRouter = require("./routes/countries");
+var statesRouter = require("./routes/states");
+var addressesRouter = require("./routes/addresses");
 var imagesRouter = require("./routes/images");
 var productsRouter = require("./routes/products");
 var categoriesRouter = require("./routes/categories");
@@ -84,7 +88,9 @@ app.get("/", function (req, res) {
 app.use("/api/doc/v1", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/images", imagesRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/address", addressRouter);
+app.use("/api/countries", countriesRouter);
+app.use("/api/states", statesRouter);
+app.use("/api/addresses", addressesRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/orders", ordersRouter);

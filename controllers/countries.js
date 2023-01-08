@@ -31,7 +31,14 @@ exports.getCountries = (req, res, next) => {
 };
 exports.getCountry = (req, res, next) => {
   Countries.findOne({
-    $or: [{ _id: req.params.country }, { country: req.body.country }],
+    $or: [
+      { _id: req.params.country },
+      {
+        country: `${req.params.country
+          .charAt(0)
+          .toUpperCase()}${req.params.country.slice(1).toLowerCase()}`,
+      },
+    ],
   })
     .then((data) => {
       return res.status(200).json({ success: true, data: data });
@@ -43,7 +50,14 @@ exports.getCountry = (req, res, next) => {
 exports.updateCountry = (req, res, next) => {
   Countries.findOneAndUpdate(
     {
-      $or: [{ _id: req.params.country }, { country: req.body.country }],
+      $or: [
+        { _id: req.params.country },
+        {
+          country: `${req.params.country
+            .charAt(0)
+            .toUpperCase()}${req.params.country.slice(1).toLowerCase()}`,
+        },
+      ],
     },
     { ...req.body }
   )
@@ -56,7 +70,14 @@ exports.updateCountry = (req, res, next) => {
 };
 exports.deleteCountry = (req, res, next) => {
   Countries.findOneAndDelete({
-    $or: [{ _id: req.params.country }, { country: req.body.country }],
+    $or: [
+      { _id: req.params.country },
+      {
+        country: `${req.params.country
+          .charAt(0)
+          .toUpperCase()}${req.params.country.slice(1).toLowerCase()}`,
+      },
+    ],
   })
     .then((data) => {
       return res.status(200).json({ deleted: true, data: data });
