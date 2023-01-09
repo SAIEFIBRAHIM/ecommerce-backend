@@ -1,3 +1,4 @@
+const countries = require("../models/countries");
 const Countries = require("../models/countries");
 
 exports.addCountry = (req, res, next) => {
@@ -10,8 +11,8 @@ exports.addCountry = (req, res, next) => {
       return res.status(400).json({ success: false, error: error });
     });
 };
-exports.addCountries = (req, res, next) => {
-  Country.insertMany(req.body)
+exports.addCountries = async (req, res, next) => {
+  await Countries.insertMany(req.body)
     .then((data) => {
       return res.status(201).json({ success: true, data: data });
     })
@@ -29,23 +30,36 @@ exports.getCountries = (req, res, next) => {
       return res.status(400).json({ success: false, error: error });
     });
 };
-exports.getCountry = (req, res, next) => {
-  Countries.findOne({
-    $or: [
-      { _id: req.params.country },
-      {
+exports.getCountry = async (req, res, next) => {
+  if (typeof req.params.country === String) {
+    await countries
+      .findOne({
         country: `${req.params.country
           .charAt(0)
           .toUpperCase()}${req.params.country.slice(1).toLowerCase()}`,
-      },
-    ],
-  })
-    .then((data) => {
-      return res.status(200).json({ success: true, data: data });
-    })
-    .catch((error) => {
-      return res.status(400).json({ success: false, error: error });
-    });
+      })
+      .then((data) => {
+        console.log(typeof req.params.country);
+
+        return res.status(200).json({ success: true, data: data });
+      })
+      .catch((error) => {
+        console.log(typeof req.params.country);
+        console.log(error);
+        return res.status(400).json({ success: false, error: error });
+      });
+  } else {
+    await Countries.findById(req.params.country)
+      .then((data) => {
+        console.log(req.params.country);
+        return res.status(200).json({ success: true, data: data });
+      })
+      .catch((error) => {
+        console.log(req.params.country);
+        console.log(error);
+        return res.status(400).json({ success: false, error: error });
+      });
+  }
 };
 exports.updateCountry = (req, res, next) => {
   Countries.findOneAndUpdate(
