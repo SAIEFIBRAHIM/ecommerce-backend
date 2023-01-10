@@ -1,4 +1,3 @@
-const countries = require("../models/countries");
 const Countries = require("../models/countries");
 
 exports.addCountry = (req, res, next) => {
@@ -30,25 +29,9 @@ exports.getCountries = (req, res, next) => {
       return res.status(400).json({ success: false, error: error });
     });
 };
-exports.getCountry = async (req, res, next) => {
-  await countries
-    .findOne({
-      country: `${req.params.country
-        .charAt(0)
-        .toUpperCase()}${req.params.country.slice(1).toLowerCase()}`,
-    })
-    .then((data) => {
-      console.log(typeof req.params.country);
 
-      return res.status(200).json({ success: true, data: data });
-    })
-    .catch((error) => {
-      return res.status(400).json({ success: false, error: error });
-    });
-};
-exports.getCountryById = async (req, res, next) => {
-  await countries
-    .findById(req.params.id)
+exports.getCountry = async (req, res, next) => {
+  await Countries.findById(req.params.id)
     .then((data) => {
       return res.status(200).json({ success: true, data: data });
     })
@@ -57,37 +40,17 @@ exports.getCountryById = async (req, res, next) => {
     });
 };
 exports.updateCountry = (req, res, next) => {
-  Countries.findOneAndUpdate(
-    {
-      $or: [
-        { _id: req.params.country },
-        {
-          country: `${req.params.country
-            .charAt(0)
-            .toUpperCase()}${req.params.country.slice(1).toLowerCase()}`,
-        },
-      ],
-    },
-    { ...req.body }
-  )
+  Countries.findByIdAndUpdate(req.params.id, { ...req.body })
     .then((data) => {
       return res.status(200).json({ success: true, data: data });
     })
     .catch((error) => {
+      console.log(req.baseUrl.slice(5));
       return res.status(400).json({ success: false, error: error });
     });
 };
 exports.deleteCountry = (req, res, next) => {
-  Countries.findOneAndDelete({
-    $or: [
-      { _id: req.params.country },
-      {
-        country: `${req.params.country
-          .charAt(0)
-          .toUpperCase()}${req.params.country.slice(1).toLowerCase()}`,
-      },
-    ],
-  })
+  Countries.findByIdAndDelete(req.params.id)
     .then((data) => {
       return res.status(200).json({ deleted: true, data: data });
     })
