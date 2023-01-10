@@ -34,6 +34,7 @@ app.use((req, res, next) => {
   next();
 });
 //Mongoose Connect
+mongoose.set("strictQuery", true);
 mongoose
   .connect(dbConfig.database)
   .then(() => {

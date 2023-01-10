@@ -31,35 +31,30 @@ exports.getCountries = (req, res, next) => {
     });
 };
 exports.getCountry = async (req, res, next) => {
-  if (typeof req.params.country === String) {
-    await countries
-      .findOne({
-        country: `${req.params.country
-          .charAt(0)
-          .toUpperCase()}${req.params.country.slice(1).toLowerCase()}`,
-      })
-      .then((data) => {
-        console.log(typeof req.params.country);
+  await countries
+    .findOne({
+      country: `${req.params.country
+        .charAt(0)
+        .toUpperCase()}${req.params.country.slice(1).toLowerCase()}`,
+    })
+    .then((data) => {
+      console.log(typeof req.params.country);
 
-        return res.status(200).json({ success: true, data: data });
-      })
-      .catch((error) => {
-        console.log(typeof req.params.country);
-        console.log(error);
-        return res.status(400).json({ success: false, error: error });
-      });
-  } else {
-    await Countries.findById(req.params.country)
-      .then((data) => {
-        console.log(req.params.country);
-        return res.status(200).json({ success: true, data: data });
-      })
-      .catch((error) => {
-        console.log(req.params.country);
-        console.log(error);
-        return res.status(400).json({ success: false, error: error });
-      });
-  }
+      return res.status(200).json({ success: true, data: data });
+    })
+    .catch((error) => {
+      return res.status(400).json({ success: false, error: error });
+    });
+};
+exports.getCountryById = async (req, res, next) => {
+  await countries
+    .findById(req.params.id)
+    .then((data) => {
+      return res.status(200).json({ success: true, data: data });
+    })
+    .catch((error) => {
+      return res.status(400).json({ success: false, error: error });
+    });
 };
 exports.updateCountry = (req, res, next) => {
   Countries.findOneAndUpdate(
