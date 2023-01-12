@@ -13,18 +13,21 @@ exports.addState = async (req, res, next) => {
 };
 
 exports.addStates = (req, res, next) => {
-  req.body.forEach(async (state) => {
-    const State = new States({
-      ...state,
-    });
-    State.save()
-      .then((data) => {
-        return res.status(201).json({ success: true, data: data });
-      })
-      .catch((error) => {
-        return res.status(400).json({ success: false, error: error });
+  try {
+    const statesArray = [];
+    req.body.forEach(async (state) => {
+      const State = new States({
+        ...state,
       });
-  });
+      State.save();
+      statesArray.push(State);
+    });
+    res
+      .status(201)
+      .json({ success: true, saved: statesArray.length, data: statesArray });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error });
+  }
 };
 
 exports.getStates = (req, res, next) => {
