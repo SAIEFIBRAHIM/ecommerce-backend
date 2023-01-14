@@ -19,25 +19,8 @@ var productsRouter = require("./routes/products");
 var categoriesRouter = require("./routes/categories");
 var ordersRouter = require("./routes/orders");
 var ticketsRouter = require("./routes/tickets");
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+
 require("dotenv").config();
-
-//firebase setup
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDu3lwj8MjfZ_y-Kf1ZN8I8qG6SJUVpUt0",
-  authDomain: "retech-outlet-backend.firebaseapp.com",
-  projectId: "retech-outlet-backend",
-  storageBucket: "retech-outlet-backend.appspot.com",
-  messagingSenderId: "658591100613",
-  appId: "1:658591100613:web:3a402255a151fab0d64aac",
-  measurementId: "G-TQH7LX22MH",
-};
-
-// Initialize Firebase
-const fireApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(fireApp);
 
 // set the view engine to ejs
 app.set("view engine", "ejs");
