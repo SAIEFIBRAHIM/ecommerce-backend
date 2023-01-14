@@ -29,8 +29,17 @@ exports.addAddresses = (req, res, next) => {
 exports.getAddresses = (req, res, next) => {
   if (req.query.populate === "info") {
     Addresses.find()
-      .populate("Countries", "_id", "country")
-      .populate("States", "_id", "state")
+      .populate("country", "country")
+      .populate("state", "state")
+
+      .then((data) => {
+        return res.status(200).json({ success: true, data: data });
+      })
+      .catch((error) => {
+        return res.status(400).json({ success: false, error: error });
+      });
+  } else {
+    Addresses.find()
       .then((data) => {
         return res.status(200).json({ success: true, data: data });
       })
@@ -38,19 +47,20 @@ exports.getAddresses = (req, res, next) => {
         return res.status(400).json({ success: false, error: error });
       });
   }
-  Addresses.find()
-    .then((data) => {
-      return res.status(200).json({ success: true, data: data });
-    })
-    .catch((error) => {
-      return res.status(400).json({ success: false, error: error });
-    });
 };
 exports.getAddressesByCountryAndState = async (req, res, next) => {
   if (req.query.populate === "info") {
     Addresses.find({ country: req.query.country, state: req.query.state })
-      .populate("Countries", "_id", "country")
-      .populate("States", "_id", "state")
+      .populate("country", "country")
+      .populate("state", "state")
+      .then((data) => {
+        return res.status(200).json({ success: true, data: data });
+      })
+      .catch((error) => {
+        return res.status(400).json({ success: false, error: error });
+      });
+  } else {
+    Addresses.find({ country: req.query.country, state: req.query.state })
       .then((data) => {
         return res.status(200).json({ success: true, data: data });
       })
@@ -58,19 +68,20 @@ exports.getAddressesByCountryAndState = async (req, res, next) => {
         return res.status(400).json({ success: false, error: error });
       });
   }
-  Addresses.find({ country: req.query.country, state: req.query.state })
-    .then((data) => {
-      return res.status(200).json({ success: true, data: data });
-    })
-    .catch((error) => {
-      return res.status(400).json({ success: false, error: error });
-    });
 };
 exports.getAddress = (req, res, next) => {
   if (req.query.populate === "info") {
     Addresses.findById(req.params.id)
-      .populate("Countries", "_id", "country")
-      .populate("States", "_id", "state")
+      .populate("country", "country")
+      .populate("state", "state")
+      .then((data) => {
+        return res.status(200).json({ success: true, data: data });
+      })
+      .catch((error) => {
+        return res.status(400).json({ success: false, error: error });
+      });
+  } else {
+    Addresses.findById(req.params.id)
       .then((data) => {
         return res.status(200).json({ success: true, data: data });
       })
@@ -78,16 +89,9 @@ exports.getAddress = (req, res, next) => {
         return res.status(400).json({ success: false, error: error });
       });
   }
-  Addresses.findById(req.params.id)
-    .then((data) => {
-      return res.status(200).json({ success: true, data: data });
-    })
-    .catch((error) => {
-      return res.status(400).json({ success: false, error: error });
-    });
 };
 exports.updateAddress = async (req, res, next) => {
-  await Addresses.findByIdAndUpdate(req.params.id)
+  await Addresses.findByIdAndUpdate(req.params.id, { ...req.body })
     .then((data) => {
       return res.status(200).json({ success: true, data: data });
     })

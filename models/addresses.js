@@ -11,11 +11,11 @@ const AddressesSchema = new Schema({
     ref: "States",
     required: [true, "state field is required"],
   },
-  road: {
+  address: {
     type: String,
     required: [true, "road field is required"],
   },
-  road_ar: {
+  address_ar: {
     type: String,
   },
   created_at: {

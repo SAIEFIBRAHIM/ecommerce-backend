@@ -31,9 +31,17 @@ exports.addStates = (req, res, next) => {
 };
 
 exports.getStates = (req, res, next) => {
-  if (req.query.populate === "country") {
+  if (req.query.populate === "info") {
     States.find()
-      .populate("Countries", "_id", "country")
+      .populate("country", "country")
+      .then((data) => {
+        return res.status(200).json({ success: true, data: data });
+      })
+      .catch((error) => {
+        return res.status(400).json({ success: false, error: error });
+      });
+  } else {
+    States.find()
       .then((data) => {
         return res.status(200).json({ success: true, data: data });
       })
@@ -41,19 +49,20 @@ exports.getStates = (req, res, next) => {
         return res.status(400).json({ success: false, error: error });
       });
   }
-  States.find()
-    .then((data) => {
-      return res.status(200).json({ success: true, data: data });
-    })
-    .catch((error) => {
-      return res.status(400).json({ success: false, error: error });
-    });
 };
 
 exports.getStatesByCountry = async (req, res, next) => {
-  if (req.query.populate === "country") {
+  if (req.query.populate === "info") {
     States.find({ country: req.query.country })
-      .populate("Countries", "_id", "country")
+      .populate("country", "country")
+      .then((data) => {
+        return res.status(200).json({ success: true, data: data });
+      })
+      .catch((error) => {
+        return res.status(400).json({ success: false, error: error });
+      });
+  } else {
+    States.find({ country: req.query.country })
       .then((data) => {
         return res.status(200).json({ success: true, data: data });
       })
@@ -61,18 +70,19 @@ exports.getStatesByCountry = async (req, res, next) => {
         return res.status(400).json({ success: false, error: error });
       });
   }
-  States.find({ country: req.query.country })
-    .then((data) => {
-      return res.status(200).json({ success: true, data: data });
-    })
-    .catch((error) => {
-      return res.status(400).json({ success: false, error: error });
-    });
 };
 exports.getState = (req, res, next) => {
-  if (req.query.populate === "country") {
+  if (req.query.populate === "info") {
     States.findById(req.params.id)
-      .populate("Countries", "_id", "country")
+      .populate("country", "country")
+      .then((data) => {
+        return res.status(200).json({ success: true, data: data });
+      })
+      .catch((error) => {
+        return res.status(400).json({ success: false, error: error });
+      });
+  } else {
+    States.findById(req.params.id)
       .then((data) => {
         return res.status(200).json({ success: true, data: data });
       })
@@ -80,13 +90,6 @@ exports.getState = (req, res, next) => {
         return res.status(400).json({ success: false, error: error });
       });
   }
-  States.findById(req.params.id)
-    .then((data) => {
-      return res.status(200).json({ success: true, data: data });
-    })
-    .catch((error) => {
-      return res.status(400).json({ success: false, error: error });
-    });
 };
 exports.updateState = async (req, res, next) => {
   States.findByIdAndUpdate(
