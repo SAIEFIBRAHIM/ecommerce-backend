@@ -5,6 +5,7 @@ var auth = require("../middlewares/auth");
 router.get("/", addressesCtrl.getAddresses);
 router.get("/id/:id", addressesCtrl.getAddress);
 router.get("/search", addressesCtrl.getAddressesByCountryAndState);
+router.get("/search/id", addressesCtrl.getAddressesByCountryAndStateId);
 router.post("/", auth, addressesCtrl.addAddress);
 router.post("/bulk", auth, addressesCtrl.addAddresses);
 router.put("/id/:id", auth, addressesCtrl.updateAddress);

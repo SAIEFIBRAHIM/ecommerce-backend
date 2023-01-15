@@ -19,9 +19,10 @@ var productsRouter = require("./routes/products");
 var categoriesRouter = require("./routes/categories");
 var ordersRouter = require("./routes/orders");
 var ticketsRouter = require("./routes/tickets");
+const helmet = require("helmet");
 
 require("dotenv").config();
-
+app.use(helmet());
 // set the view engine to ejs
 app.set("view engine", "ejs");
 

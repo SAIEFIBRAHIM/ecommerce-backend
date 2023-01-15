@@ -51,7 +51,7 @@ exports.getStates = (req, res, next) => {
   }
 };
 
-exports.getStatesByCountry = async (req, res, next) => {
+exports.getStatesByCountryId = async (req, res, next) => {
   if (req.query.populate === "info") {
     States.find({ country: req.query.country })
       .populate("country", "country")
@@ -69,6 +69,64 @@ exports.getStatesByCountry = async (req, res, next) => {
       .catch((error) => {
         return res.status(400).json({ success: false, error: error });
       });
+  }
+};
+exports.getStatesByCountryName = (req, res, next) => {
+  if (req.query.populate === "info") {
+    Countries.findOne(
+      {
+        country: `${req.query.country
+          .charAt(0)
+          .toUpperCase()}${req.query.country.slice(1).toLowerCase()}`,
+      },
+      async (err, found) => {
+        if (err) throw err;
+        if (!found) {
+          return res.status(400).json({
+            success: false,
+            error: `No states found under ${req.query.country}`,
+          });
+        } else {
+          await States.find({
+            country: found._id,
+          })
+            .populate("country", "country")
+            .then((data) => {
+              return res.status(200).json({ success: true, data: data });
+            })
+            .catch((error) => {
+              return res.status(400).json({ success: false, error: error });
+            });
+        }
+      }
+    );
+  } else {
+    Countries.findOne(
+      {
+        country: `${req.query.country
+          .charAt(0)
+          .toUpperCase()}${req.query.country.slice(1).toLowerCase()}`,
+      },
+      async (err, found) => {
+        if (err) throw err;
+        if (!found) {
+          return res.status(400).json({
+            success: false,
+            error: `No states found under ${req.query.country}`,
+          });
+        } else {
+          await States.find({
+            country: found._id,
+          })
+            .then((data) => {
+              return res.status(200).json({ success: true, data: data });
+            })
+            .catch((error) => {
+              return res.status(400).json({ success: false, error: error });
+            });
+        }
+      }
+    );
   }
 };
 exports.getState = (req, res, next) => {

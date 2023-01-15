@@ -130,7 +130,7 @@ exports.login = (req, res, next) => {
     (err, user) => {
       if (err) throw err;
       if (!user) {
-        res.status(401).send({
+        res.status(400).send({
           success: false,
           msg: "User not found",
         });
