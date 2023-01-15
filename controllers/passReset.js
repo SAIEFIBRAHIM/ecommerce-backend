@@ -42,21 +42,10 @@ exports.resetPass = async (req, res, next) => {
           .status(403)
           .json({ error: "Token expired request for password again" });
       } else if (req.query.reset_token === data.pass_reset_token) {
-        data.password = req.body.password;
-        data.updated_at = Date.now();
-        data.pass_reset_token = undefined;
-        await data
-          .save()
-
-          .then((result) => {
-            return res.status(200).json({
-              success: true,
-              data: result,
-            });
-          })
-          .catch((err) => {
-            return res.status(400).json({ error: err });
-          });
+        return res.redirect(
+          301,
+          `${process.env.FRONT_END_URL}/account/reset/${data.pass_reset_token}`
+        );
       } else {
         res
           .status(403)
@@ -67,4 +56,29 @@ exports.resetPass = async (req, res, next) => {
       return res.status(404).json({ error: error });
     });
 };
-exports.updateUserPass = async (req, res, next) => {};
+exports.updateUserPass = async (req, res, next) => {
+  const decodedUser = jwt.verify(
+    await req.query.token,
+    process.env.VERIFY_TOKEN_KEY
+  );
+  await User.findById(decodedUser._id)
+    .then(async (data) => {
+      data.password = req.body.password;
+      data.updated_at = Date.now();
+      data.pass_reset_token = undefined;
+      await data
+        .save()
+        .then((result) => {
+          return res.status(200).json({
+            success: true,
+            data: result,
+          });
+        })
+        .catch((err) => {
+          return res.status(400).json({ error: err });
+        });
+    })
+    .catch((err) => {
+      res.status(400).json({ success: false, error: err });
+    });
+};

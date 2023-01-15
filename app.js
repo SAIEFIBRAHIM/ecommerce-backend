@@ -22,9 +22,19 @@ var categoriesRouter = require("./routes/categories");
 var ordersRouter = require("./routes/orders");
 var ticketsRouter = require("./routes/tickets");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 require("dotenv").config();
 app.use(helmet());
+const apiLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 200, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+// Apply the rate limiting middleware to all requests
+app.use("/api", apiLimiter);
+
 // set the view engine to ejs
 app.set("view engine", "ejs");
 

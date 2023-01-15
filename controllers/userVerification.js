@@ -35,8 +35,8 @@ exports.requestVerify = async (req, res, next) => {
               msg: "Verification link sent to your email",
             });
           })
-          .catch(() => {
-            return res.redirect(301, `${process.env.FRONT_END_URL}/login`);
+          .catch((error) => {
+            res.status(400).json({ success: false, error: error });
           });
       }
     })
@@ -51,10 +51,7 @@ exports.verifyUser = async (req, res, next) => {
     process.env.VERIFY_TOKEN_KEY
   );
   if (userVerification.verified) {
-    return res.redirect(
-      301,
-      `${process.env.FRONT_END_URL}/account/alreadyverified`
-    );
+    return res.redirect(301, `${process.env.FRONT_END_URL}/account/verified`);
   }
   await User.findOne({ username: req.query.username })
     .then(async (found) => {
@@ -65,7 +62,7 @@ exports.verifyUser = async (req, res, next) => {
         found.verify_token = undefined;
         await found
           .save()
-          .then((data) => {
+          .then(() => {
             return res.redirect(
               301,
               `${process.env.FRONT_END_URL}/account/verified`
@@ -73,7 +70,7 @@ exports.verifyUser = async (req, res, next) => {
           })
 
           .catch((err) => {
-            console.log(err, "unexpected error");
+            console.log(err, "Unexpected error please try again later");
             return res.status(404).json({ error: err });
           });
       } else {
