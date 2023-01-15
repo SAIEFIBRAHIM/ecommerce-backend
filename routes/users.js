@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var userCtrl = require("../controllers/user");
+var userCtrl = require("../controllers/users");
 var auth = require("../middlewares/auth");
 router.get("/", auth, userCtrl.getUsers);
 router.get("/:id", auth, userCtrl.getUserId);

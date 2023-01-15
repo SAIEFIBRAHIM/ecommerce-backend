@@ -14,7 +14,6 @@ const fileSizeFormatter = (bytes, decimal) => {
 };
 exports.singleImageUpload = async (req, res, next) => {
   if (!req.files) {
-    console.log("No File provided");
     return res.status(400).send("No File provided");
   }
 
@@ -34,8 +33,7 @@ exports.singleImageUpload = async (req, res, next) => {
       .status(201)
       .json({ success: true, uploaded: filesArray.length, data: filesArray });
   } catch (error) {
-    console.log(error);
-    res.status(400).json({ success: false, msg: error });
+    res.status(400).json({ success: false, error: error });
   }
 };
 exports.getAllImages = (req, res, next) => {
@@ -44,7 +42,6 @@ exports.getAllImages = (req, res, next) => {
       res.status(200).json({ success: true, images: data.length, data: data });
     })
     .catch((error) => {
-      console.log(error);
       res.status.json({ success: false, error: error });
     });
 };
@@ -54,7 +51,6 @@ exports.deleteAllImages = (req, res, next) => {
       res.status(200).json({ deleted: true });
     })
     .catch((error) => {
-      console.log(error);
       res.status.json({ success: false, error: error });
     });
 };

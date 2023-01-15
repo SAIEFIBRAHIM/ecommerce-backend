@@ -7,8 +7,7 @@ exports.addOrder = async (req, res, next) => {
       res.status(201).json({ success: true, data: data });
     })
     .catch((error) => {
-      console.log(error);
-      res.status(400).json({ success: false, err: error });
+      res.status(400).json({ success: false, error: error });
     });
 };
 exports.getAllOrders = (req, res, next) => {
@@ -17,8 +16,7 @@ exports.getAllOrders = (req, res, next) => {
       res.status(200).json({ success: true, data: data });
     })
     .catch((error) => {
-      console.log(error);
-      res.status(400).json({ success: false, err: error });
+      res.status(400).json({ success: false, error: error });
     });
 };
 exports.getOrder = (req, res, next) => {
@@ -27,8 +25,7 @@ exports.getOrder = (req, res, next) => {
       res.status(200).json({ success: true, data: data });
     })
     .catch((error) => {
-      console.log(error);
-      res.status(400).json({ success: false, err: error });
+      res.status(400).json({ success: false, error: error });
     });
 };
 exports.updateOrderDetails = (req, res, next) => {
@@ -37,8 +34,7 @@ exports.updateOrderDetails = (req, res, next) => {
       res.status(200).json({ success: true, data: data });
     })
     .catch((error) => {
-      console.log(error);
-      res.status(400).json({ success: false, err: error });
+      res.status(400).json({ success: false, error: error });
     });
 };
 exports.deleteOrder = (req, res, next) => {
@@ -47,7 +43,6 @@ exports.deleteOrder = (req, res, next) => {
       res.status(200).json({ deleted: true });
     })
     .catch((error) => {
-      console.log(error);
       res.status(400).json({ deleted: false });
     });
 };

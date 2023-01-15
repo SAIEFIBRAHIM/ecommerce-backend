@@ -7,7 +7,6 @@ exports.addCategory = async (req, res, next) => {
       res.status(201).json({ success: true, data: data });
     })
     .catch((err) => {
-      console.log(err);
       res.send(400).json({ success: false, error: err });
     });
 };
@@ -17,7 +16,6 @@ exports.getAllCategories = async (req, res, next) => {
       res.status(200).json({ success: true, data: data });
     })
     .catch((err) => {
-      console.log(err);
       res.send(400).json({ success: false, error: err });
     });
 };
@@ -27,7 +25,6 @@ exports.getCategory = async (req, res, next) => {
       res.status(200).json({ success: true, data: data });
     })
     .catch((err) => {
-      console.log(err);
       res.send(400).json({ success: false, error: err });
     });
 };
@@ -40,7 +37,6 @@ exports.updateCategory = async (req, res, next) => {
       res.status(200).json({ success: true, data: data });
     })
     .catch((err) => {
-      console.log(err);
       res.send(400).json({ success: false, error: err });
     });
 };
@@ -50,7 +46,6 @@ exports.deleteCategory = async (req, res, next) => {
       res.status(200).json({ deleted: true });
     })
     .catch((err) => {
-      console.log(err);
       res.send(400).json({ deleted: false, error: err });
     });
 };
@@ -60,7 +55,6 @@ exports.deleteCategories = async (req, res, next) => {
       res.status(200).json({ deleted: true });
     })
     .catch((err) => {
-      console.log(err);
       res.send(400).json({ deleted: false, error: err });
     });
 };

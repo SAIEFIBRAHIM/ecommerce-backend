@@ -1,3 +1,4 @@
+//modules
 var createError = require("http-errors");
 var express = require("express");
 var app = express();
@@ -8,16 +9,20 @@ var mongoose = require("mongoose");
 var swaggerJsDoc = require("swagger-jsdoc");
 var swaggerUi = require("swagger-ui-express");
 var dbConfig = require("./config/database");
+//routers
 var usersRouter = require("./routes/users");
-var addressRouter = require("./routes/address");
+var countriesRouter = require("./routes/countries");
+var statesRouter = require("./routes/states");
+var addressesRouter = require("./routes/addresses");
 var imagesRouter = require("./routes/images");
 var productsRouter = require("./routes/products");
 var categoriesRouter = require("./routes/categories");
 var ordersRouter = require("./routes/orders");
 var ticketsRouter = require("./routes/tickets");
+const helmet = require("helmet");
 
 require("dotenv").config();
-
+app.use(helmet());
 // set the view engine to ejs
 app.set("view engine", "ejs");
 
@@ -30,6 +35,7 @@ app.use((req, res, next) => {
   next();
 });
 //Mongoose Connect
+mongoose.set("strictQuery", true);
 mongoose
   .connect(dbConfig.database)
   .then(() => {
@@ -42,18 +48,18 @@ const options = {
     openapi: "3.0.1",
     info: {
       title: "Ecommerce API",
-      version: "1.0.0",
+      version: "1.1.0",
       description: "REST API documentation",
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: process.env.BASE_URL,
       },
     ],
     components: {
       securitySchemes: {
         bearerAuth: {
-          type: "http",
+          type: "https",
           scheme: "bearer",
           bearerFormat: "JWT",
         },
@@ -84,7 +90,9 @@ app.get("/", function (req, res) {
 app.use("/api/doc/v1", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/images", imagesRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/address", addressRouter);
+app.use("/api/countries", countriesRouter);
+app.use("/api/states", statesRouter);
+app.use("/api/addresses", addressesRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/orders", ordersRouter);
