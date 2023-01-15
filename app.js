@@ -11,6 +11,8 @@ var swaggerUi = require("swagger-ui-express");
 var dbConfig = require("./config/database");
 //routers
 var usersRouter = require("./routes/users");
+var userVerificationRouter = require("./routes/userVerification");
+var passResetRouter = require("./routes/passReset");
 var countriesRouter = require("./routes/countries");
 var statesRouter = require("./routes/states");
 var addressesRouter = require("./routes/addresses");
@@ -90,6 +92,8 @@ app.get("/", function (req, res) {
 app.use("/api/doc/v1", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/images", imagesRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/verification", userVerificationRouter);
+app.use("/api/passreset", passResetRouter);
 app.use("/api/countries", countriesRouter);
 app.use("/api/states", statesRouter);
 app.use("/api/addresses", addressesRouter);

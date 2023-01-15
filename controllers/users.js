@@ -1,54 +1,25 @@
 const User = require("../models/users");
-const Address = require("../models/addresses");
 const jwt = require("jsonwebtoken");
-const tokenList = {};
+const tokenList = [];
 const verifyEmail = require("../config/verifyemail");
-const resetPassEmail = require("../config/resetpassemail");
 exports.addUser = async (req, res, next) => {
-  await Address.findOne({
-    country: req.body.address.country,
-    city: req.body.address.city,
-    road: req.body.address.road,
-  })
-    .then(async (data) => {
-      if (data) {
-        const user = new User({ ...req.body, address: data._id });
-        user
-          .save()
-          .then(async (result) => {
-            const verifyToken = jwt.sign(
-              result.toJSON(),
-              process.env.VERIFY_TOKEN_KEY,
-              {
-                expiresIn: 60 * 30,
-              }
-            );
-            await User.findByIdAndUpdate(result._id, {
-              verify_token: verifyToken,
-            });
-            await verifyEmail(
-              result.email,
-              result.first_name,
-              result.username,
-              verifyToken
-            );
-            return res.status(201).json({
-              success: true,
-              msg: "Successful created new User",
-              hint: "verification link sent to your email",
-              data: result,
-            });
-          })
-          .catch((error) => {
-            return res.status(403).json({ error: error });
-          });
-      }
-      // create address, then create user with the id of created address
-      else
-        return res.status(403).json({ error: "Wrong Address", address: data });
+  const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
+    expiresIn: 60 * 30,
+  });
+  const user = new User({ ...req.body, verify_token: verifyToken });
+  await user
+    .save()
+    .then((data) => {
+      verifyEmail(data.email, data.first_name, data.username, verifyToken);
+      return res.status(201).json({
+        success: true,
+        msg: "Successful created new User",
+        hint: "verification link sent to your email",
+        data: data,
+      });
     })
-    .catch((err) => {
-      return res.status(403).json({ error: err });
+    .catch((error) => {
+      return res.status(403).json({ error: error });
     });
 };
 exports.getUsers = (req, res, next) => {
@@ -199,131 +170,4 @@ exports.token = (req, res, next) => {
   } else {
     res.status(404).send("Invalid request");
   }
-};
-exports.requestVerify = async (req, res, next) => {
-  const token = await req.headers.authorization.split(" ")[1];
-  const decodedUser = jwt.verify(await token, process.env.TOKEN_KEY);
-  User.findById(decodedUser._id).then(async (found) => {
-    const verifyToken = jwt.sign(found.toJSON(), process.env.VERIFY_TOKEN_KEY, {
-      expiresIn: 60 * 30,
-    });
-    await User.findByIdAndUpdate(decodedUser._id, { verify_token: verifyToken })
-      .then(async (data) => {
-        await verifyEmail(
-          data.email,
-          data.first_name,
-          data.username,
-          verifyToken
-        );
-        return res.status(200).json({
-          success: true,
-          hint: "verification link sent to your email",
-          token: verifyToken,
-        });
-      })
-      .catch((err) => {
-        return res.status(400).json({ error: err });
-      });
-  });
-};
-exports.verifyUser = async (req, res, next) => {
-  const userVerification = jwt.verify(
-    req.query.verify_token,
-    process.env.VERIFY_TOKEN_KEY
-  );
-  if (userVerification.verified) {
-    return res.status(200).json({ msg: "Already verified" });
-  }
-  await User.findOne({ username: req.query.username })
-    .then((found) => {
-      if (userVerification.exp * 1000 < Date.now()) {
-        return res.status(400).json({
-          err: "Verification token time out, Request for a new verification link",
-        });
-      } else if (req.query.verify_token === found.verify_token) {
-        found.verified = true;
-        found.verify_token = undefined;
-        found
-          .save()
-          .then((data) => {
-            return res.status(200).send({ verified: true, data: data });
-          })
-
-          .catch((err) => {
-            return res.status(404).json({ error: err });
-          });
-      } else {
-        return res
-          .status(400)
-          .json({ msg: "Something went wrong try again please" });
-      }
-    })
-    .catch((error) => {
-      return res.status(400).json({ error: error });
-    });
-};
-exports.forgetPass = (req, res, next) => {
-  User.findOne({
-    $or: [{ username: req.query.login }, { email: req.query.login }],
-  })
-    .then((data) => {
-      const resetToken = jwt.sign(data.toJSON(), process.env.VERIFY_TOKEN_KEY, {
-        expiresIn: 60 * 30,
-      });
-      User.findByIdAndUpdate(data._id, { pass_reset_token: resetToken }).then(
-        (result) => {
-          verifyEmail(
-            result.email,
-            result.first_name,
-            req.query.login,
-            resetToken
-          );
-          return res.status(200).json({
-            success: true,
-            reset_token: resetToken,
-            msg: "Password reset link sent to your email address",
-          });
-        }
-      );
-    })
-    .catch((err) => {
-      return res.status(404).json({ error: err });
-    });
-};
-exports.resetPass = async (req, res, next) => {
-  const resetVerify = jwt.verify(
-    await req.query.reset_token,
-    process.env.VERIFY_TOKEN_KEY
-  );
-  await User.findById(resetVerify._id)
-    .then(async (data) => {
-      if (resetVerify.exp * 1000 < Date.now()) {
-        res
-          .status(403)
-          .json({ error: "Token expired request for password again" });
-      } else if (req.query.reset_token === data.pass_reset_token) {
-        data.password = req.body.password;
-        data.updated_at = Date.now();
-        data.pass_reset_token = undefined;
-        await data
-          .save()
-
-          .then((result) => {
-            return res.status(200).json({
-              success: true,
-              data: result,
-            });
-          })
-          .catch((err) => {
-            return res.status(400).json({ error: err });
-          });
-      } else {
-        res
-          .status(403)
-          .json({ error: "Something went wrong try again please" });
-      }
-    })
-    .catch((error) => {
-      return res.status(404).json({ error: error });
-    });
 };

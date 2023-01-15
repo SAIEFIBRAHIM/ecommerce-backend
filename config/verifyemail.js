@@ -14,917 +14,369 @@ const verifyEmail = async (to, fname, username, token) => {
       },
     });
     // send mail with defined transport object
-    let info = await transporter.sendMail({
+    await transporter.sendMail({
       from: process.env.EUSER,
       to: to,
-      subject: "Account Verification",
-      html: `
-      <html>
+      subject: "Confirmer Votre Compte Retech Outlet",
+      html: `<html>
       <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <title>Confirmer Votre Email Retech Outlet</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style type="text/css">
-          body {
-            width: 600px;
-            margin: 0 auto;
+          /**
+       * Google webfonts. Recommended to include the .woff version for cross-client compatibility.
+       */
+          @media screen {
+            @font-face {
+              font-family: "Source Sans Pro";
+              font-style: normal;
+              font-weight: 400;
+              src: local("Source Sans Pro Regular"), local("SourceSansPro-Regular"),
+                url(https://fonts.gstatic.com/s/sourcesanspro/v10/ODelI1aHBYDBqgeIAH2zlBM0YzuT7MdOe03otPbuUS0.woff)
+                  format("woff");
+            }
+    
+            @font-face {
+              font-family: "Source Sans Pro";
+              font-style: normal;
+              font-weight: 700;
+              src: local("Source Sans Pro Bold"), local("SourceSansPro-Bold"),
+                url(https://fonts.gstatic.com/s/sourcesanspro/v10/toadOcfmlt9b38dHJxOBGFkQc6VGVFSmCnC_l7QZG60.woff)
+                  format("woff");
+            }
           }
-          table {
-            border-collapse: collapse;
-          }
+    
+          /**
+       * Avoid browser level font resizing.
+       * 1. Windows Mobile
+       * 2. iOS / OSX
+       */
+          body,
           table,
+          td,
+          a {
+            -ms-text-size-adjust: 100%; /* 1 */
+            -webkit-text-size-adjust: 100%; /* 2 */
+          }
+    
+          /**
+       * Remove extra space added to tables and cells in Outlook.
+       */
+          table,
+          td {
+            mso-table-rspace: 0pt;
+            mso-table-lspace: 0pt;
+          }
+    
+          /**
+       * Better fluid images in Internet Explorer.
+       */
           img {
             -ms-interpolation-mode: bicubic;
           }
-        </style>
-        <style type="text/css">
-          body,
-          p,
-          div {
-            font-family: inherit;
-            font-size: 14px;
+    
+          /**
+       * Remove blue links for iOS devices.
+       */
+          a[x-apple-data-detectors] {
+            font-family: inherit !important;
+            font-size: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+            color: inherit !important;
+            text-decoration: none !important;
           }
+    
+          /**
+       * Fix centering issues in Android 4.4.
+       */
+          div[style*="margin: 16px 0;"] {
+            margin: 0 !important;
+          }
+    
           body {
-            color: #000000;
-          }
-          body a {
-            color: #1188e6;
-            text-decoration: none;
-          }
-          p {
-            margin: 0;
-            padding: 0;
-          }
-          table.wrapper {
             width: 100% !important;
-            table-layout: fixed;
-            -webkit-font-smoothing: antialiased;
-            -webkit-text-size-adjust: 100%;
-            -moz-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
+            height: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
           }
-          img.max-width {
-            max-width: 100% !important;
+    
+          /**
+       * Collapse table borders to avoid space between cells.
+       */
+          table {
+            border-collapse: collapse !important;
           }
-          .column.of-2 {
-            width: 50%;
+    
+          a {
+            color: #1a82e2;
           }
-          .column.of-3 {
-            width: 33.333%;
-          }
-          .column.of-4 {
-            width: 25%;
-          }
-          @media screen and (max-width: 480px) {
-            .preheader .rightColumnContent,
-            .footer .rightColumnContent {
-              text-align: left !important;
-            }
-            .preheader .rightColumnContent div,
-            .preheader .rightColumnContent span,
-            .footer .rightColumnContent div,
-            .footer .rightColumnContent span {
-              text-align: left !important;
-            }
-            .preheader .rightColumnContent,
-            .preheader .leftColumnContent {
-              font-size: 80% !important;
-              padding: 5px 0;
-            }
-            table.wrapper-mobile {
-              width: 100% !important;
-              table-layout: fixed;
-            }
-            img.max-width {
-              height: auto !important;
-              max-width: 100% !important;
-            }
-            a.bulletproof-button {
-              display: block !important;
-              width: auto !important;
-              font-size: 80%;
-              padding-left: 0 !important;
-              padding-right: 0 !important;
-            }
-            .columns {
-              width: 100% !important;
-            }
-            .column {
-              display: block !important;
-              width: 100% !important;
-              padding-left: 0 !important;
-              padding-right: 0 !important;
-              margin-left: 0 !important;
-              margin-right: 0 !important;
-            }
-          }
-        </style>
-        <link
-          href="https://fonts.googleapis.com/css?family=Muli&display=swap"
-          rel="stylesheet"
-        />
-        <style>
-          body {
-            font-family: "Muli", sans-serif;
+    
+          img {
+            height: auto;
+            line-height: 100%;
+            text-decoration: none;
+            border: 0;
+            outline: none;
           }
         </style>
       </head>
-      <body>
-        <center
-          class="wrapper"
-          data-link-color="#1188E6"
-          data-body-style="font-size:14px; font-family:inherit; color:#000000; background-color:#FFFFFF;"
+      <body style="background-color: #e9ecef">
+        <!-- start preheader -->
+        <div
+          class="preheader"
+          style="
+            display: none;
+            max-width: 0;
+            max-height: 0;
+            overflow: hidden;
+            font-size: 1px;
+            line-height: 1px;
+            color: #fff;
+            opacity: 0;
+          "
         >
-          <div class="webkit">
-            <table
-              cellpadding="0"
-              cellspacing="0"
-              border="0"
-              width="100%"
-              class="wrapper"
-              bgcolor="#FFFFFF"
-            >
-              <tbody>
+          Confirmer Votre Compte Retech Outlet
+        </div>
+        <!-- end preheader -->
+    
+        <!-- start body -->
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+          <!-- start hero -->
+          <tr>
+            <td align="center" bgcolor="#e9ecef">
+              <!--[if (gte mso 9)|(IE)]>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+            <tr>
+            <td align="center" valign="top" width="600">
+            <![endif]-->
+              <table
+                border="0"
+                cellpadding="0"
+                cellspacing="0"
+                width="100%"
+                style="max-width: 600px"
+              >
                 <tr>
-                  <td valign="top" bgcolor="#FFFFFF" width="100%">
-                    <table
-                      width="100%"
-                      role="content-container"
-                      class="outer"
-                      align="center"
-                      cellpadding="0"
-                      cellspacing="0"
-                      border="0"
+                  <td
+                    align="left"
+                    bgcolor="#ffffff"
+                    style="
+                      padding: 36px 24px 0;
+                      font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+                      border-top: 3px solid #d4dadf;
+                    "
+                  >
+                    <h1
+                      style="
+                        margin: 0;
+                        font-size: 32px;
+                        font-weight: 700;
+                        letter-spacing: -1px;
+                        line-height: 48px;
+                        text-align: center;
+                      "
                     >
-                      <tbody>
-                        <tr>
-                          <td width="100%">
-                            <table
-                              width="100%"
-                              cellpadding="0"
-                              cellspacing="0"
-                              border="0"
-                            >
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    <center>
-                                      <table>
-                                        <tr>
-                                          <td width="600">
-                                            <table
-                                              width="100%"
-                                              cellpadding="0"
-                                              cellspacing="0"
-                                              border="0"
-                                              style="width: 100%; max-width: 600px"
-                                              align="center"
-                                            >
-                                              <tbody>
-                                                <tr>
-                                                  <td
-                                                    role="modules-container"
-                                                    style="
-                                                      padding: 0px 0px 0px 0px;
-                                                      color: #000000;
-                                                      text-align: left;
-                                                    "
-                                                    bgcolor="#FFFFFF"
-                                                    width="100%"
-                                                    align="left"
-                                                  >
-                                                    <table
-                                                      class="module preheader preheader-hide"
-                                                      role="module"
-                                                      data-type="preheader"
-                                                      border="0"
-                                                      cellpadding="0"
-                                                      cellspacing="0"
-                                                      width="100%"
-                                                      style="
-                                                        display: none !important;
-                                                        visibility: hidden;
-                                                        opacity: 0;
-                                                        color: transparent;
-                                                        height: 0;
-                                                        width: 0;
-                                                      "
-                                                    >
-                                                      <tbody>
-                                                        <tr>
-                                                          <td role="module-content">
-                                                            <p></p>
-                                                          </td>
-                                                        </tr>
-                                                      </tbody>
-                                                    </table>
-                                                    <table
-                                                      border="0"
-                                                      cellpadding="0"
-                                                      cellspacing="0"
-                                                      align="center"
-                                                      width="100%"
-                                                      role="module"
-                                                      data-type="columns"
-                                                      style="
-                                                        padding: 30px 20px 30px 20px;
-                                                      "
-                                                      bgcolor="#f6f6f6"
-                                                    >
-                                                      <tbody>
-                                                        <tr role="module-content">
-                                                          <td
-                                                            height="100%"
-                                                            valign="top"
-                                                          >
-                                                            <table
-                                                              class="column"
-                                                              width="540"
-                                                              style="
-                                                                width: 540px;
-                                                                border-spacing: 0;
-                                                                border-collapse: collapse;
-                                                                margin: 0px 10px 0px
-                                                                  10px;
-                                                              "
-                                                              cellpadding="0"
-                                                              cellspacing="0"
-                                                              align="left"
-                                                              border="0"
-                                                              bgcolor=""
-                                                            >
-                                                              <tbody>
-                                                                <tr>
-                                                                  <td
-                                                                    style="
-                                                                      padding: 0px;
-                                                                      margin: 0px;
-                                                                      border-spacing: 0;
-                                                                    "
-                                                                  >
-                                                                    <table
-                                                                      class="module"
-                                                                      role="module"
-                                                                      data-type="text"
-                                                                      border="0"
-                                                                      cellpadding="0"
-                                                                      cellspacing="0"
-                                                                      width="100%"
-                                                                      style="
-                                                                        table-layout: fixed;
-                                                                      "
-                                                                      data-muid="948e3f3f-5214-4721-a90e-625a47b1c957"
-                                                                      data-mc-module-version="2019-10-22"
-                                                                    >
-                                                                      <tbody>
-                                                                        <tr>
-                                                                          <td
-                                                                            style="
-                                                                              padding: 50px
-                                                                                30px
-                                                                                18px
-                                                                                30px;
-                                                                              line-height: 36px;
-                                                                              text-align: inherit;
-                                                                              background-color: #ffffff;
-                                                                            "
-                                                                            height="100%"
-                                                                            valign="top"
-                                                                            bgcolor="#ffffff"
-                                                                            role="module-content"
-                                                                          >
-                                                                            <div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <span
-                                                                                  style="
-                                                                                    font-size: 43px;
-                                                                                  "
-                                                                                  >Thanks
-                                                                                  for
-                                                                                  signing
-                                                                                  up,
-                                                                                  ${fname}&nbsp;</span
-                                                                                >
-                                                                              </div>
-                                                                              <div></div>
-                                                                            </div>
-                                                                          </td>
-                                                                        </tr>
-                                                                      </tbody>
-                                                                    </table>
-                                                                    <table
-                                                                      class="module"
-                                                                      role="module"
-                                                                      data-type="text"
-                                                                      border="0"
-                                                                      cellpadding="0"
-                                                                      cellspacing="0"
-                                                                      width="100%"
-                                                                      style="
-                                                                        table-layout: fixed;
-                                                                      "
-                                                                      data-muid="a10dcb57-ad22-4f4d-b765-1d427dfddb4e"
-                                                                      data-mc-module-version="2019-10-22"
-                                                                    >
-                                                                      <tbody>
-                                                                        <tr>
-                                                                          <td
-                                                                            style="
-                                                                              padding: 18px
-                                                                                30px
-                                                                                18px
-                                                                                30px;
-                                                                              line-height: 22px;
-                                                                              text-align: inherit;
-                                                                              background-color: #ffffff;
-                                                                            "
-                                                                            height="100%"
-                                                                            valign="top"
-                                                                            bgcolor="#ffffff"
-                                                                            role="module-content"
-                                                                          >
-                                                                            <div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <span
-                                                                                  style="
-                                                                                    font-size: 18px;
-                                                                                  "
-                                                                                  >Please
-                                                                                  verify
-                                                                                  your
-                                                                                  email
-                                                                                  address
-                                                                                  to</span
-                                                                                ><span
-                                                                                  style="
-                                                                                    color: #000000;
-                                                                                    font-size: 18px;
-                                                                                    font-family: arial,
-                                                                                      helvetica,
-                                                                                      sans-serif;
-                                                                                  "
-                                                                                >
-                                                                                  get
-                                                                                  access
-                                                                                  to
-                                                                                  thousands
-                                                                                  of
-                                                                                  exclusive
-                                                                                  job
-                                                                                  listings</span
-                                                                                ><span
-                                                                                  style="
-                                                                                    font-size: 18px;
-                                                                                  "
-                                                                                  >.</span
-                                                                                >
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <span
-                                                                                  style="
-                                                                                    color: #ffbe00;
-                                                                                    font-size: 18px;
-                                                                                  "
-                                                                                  ><strong
-                                                                                    >Thank
-                                                                                    you!&nbsp;</strong
-                                                                                  ></span
-                                                                                >
-                                                                              </div>
-                                                                              <div></div>
-                                                                            </div>
-                                                                          </td>
-                                                                        </tr>
-                                                                      </tbody>
-                                                                    </table>
-                                                                    <table
-                                                                      class="module"
-                                                                      role="module"
-                                                                      data-type="spacer"
-                                                                      border="0"
-                                                                      cellpadding="0"
-                                                                      cellspacing="0"
-                                                                      width="100%"
-                                                                      style="
-                                                                        table-layout: fixed;
-                                                                      "
-                                                                      data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d"
-                                                                    >
-                                                                      <tbody>
-                                                                        <tr>
-                                                                          <td
-                                                                            style="
-                                                                              padding: 0px
-                                                                                0px
-                                                                                20px
-                                                                                0px;
-                                                                            "
-                                                                            role="module-content"
-                                                                            bgcolor="#ffffff"
-                                                                          ></td>
-                                                                        </tr>
-                                                                      </tbody>
-                                                                    </table>
-                                                                    <table
-                                                                      border="0"
-                                                                      cellpadding="0"
-                                                                      cellspacing="0"
-                                                                      class="module"
-                                                                      data-role="module-button"
-                                                                      data-type="button"
-                                                                      role="module"
-                                                                      style="
-                                                                        table-layout: fixed;
-                                                                      "
-                                                                      width="100%"
-                                                                      data-muid="d050540f-4672-4f31-80d9-b395dc08abe1"
-                                                                    >
-                                                                      <tbody>
-                                                                        <tr>
-                                                                          <td
-                                                                            align="center"
-                                                                            bgcolor="#ffffff"
-                                                                            class="outer-td"
-                                                                            style="
-                                                                              padding: 0px
-                                                                                0px
-                                                                                0px
-                                                                                0px;
-                                                                            "
-                                                                          >
-                                                                            <table
-                                                                              border="0"
-                                                                              cellpadding="0"
-                                                                              cellspacing="0"
-                                                                              class="wrapper-mobile"
-                                                                              style="
-                                                                                text-align: center;
-                                                                              "
-                                                                            >
-                                                                              <tbody>
-                                                                                <tr>
-                                                                                  <td
-                                                                                    align="center"
-                                                                                    bgcolor="#ffbe00"
-                                                                                    class="inner-td"
-                                                                                    style="
-                                                                                      border-radius: 6px;
-                                                                                      font-size: 16px;
-                                                                                      text-align: center;
-                                                                                      background-color: inherit;
-                                                                                    "
-                                                                                  >
-                                                                                    <a
-                                                                                      href="${process.env.FRONT_URL}/verify/${username}/${token}"
-                                                                                      style="
-                                                                                        background-color: #ffbe00;
-                                                                                        border: 1px
-                                                                                          solid
-                                                                                          #ffbe00;
-                                                                                        border-color: #ffbe00;
-                                                                                        border-radius: 0px;
-                                                                                        border-width: 1px;
-                                                                                        color: #000000;
-                                                                                        display: inline-block;
-                                                                                        font-size: 14px;
-                                                                                        font-weight: normal;
-                                                                                        letter-spacing: 0px;
-                                                                                        line-height: normal;
-                                                                                        padding: 12px
-                                                                                          40px
-                                                                                          12px
-                                                                                          40px;
-                                                                                        text-align: center;
-                                                                                        text-decoration: none;
-                                                                                        border-style: solid;
-                                                                                        font-family: inherit;
-                                                                                      "
-                                                                                      target="_blank"
-                                                                                      >Verify
-                                                                                      Email
-                                                                                      Now</a
-                                                                                    >
-                                                                                  </td>
-                                                                                </tr>
-                                                                              </tbody>
-                                                                            </table>
-                                                                          </td>
-                                                                        </tr>
-                                                                      </tbody>
-                                                                    </table>
-                                                                    <table
-                                                                      class="module"
-                                                                      role="module"
-                                                                      data-type="spacer"
-                                                                      border="0"
-                                                                      cellpadding="0"
-                                                                      cellspacing="0"
-                                                                      width="100%"
-                                                                      style="
-                                                                        table-layout: fixed;
-                                                                      "
-                                                                      data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d.1"
-                                                                    >
-                                                                      <tbody>
-                                                                        <tr>
-                                                                          <td
-                                                                            style="
-                                                                              padding: 0px
-                                                                                0px
-                                                                                50px
-                                                                                0px;
-                                                                            "
-                                                                            role="module-content"
-                                                                            bgcolor="#ffffff"
-                                                                          ></td>
-                                                                        </tr>
-                                                                      </tbody>
-                                                                    </table>
-                                                                    <table
-                                                                      class="module"
-                                                                      role="module"
-                                                                      data-type="text"
-                                                                      border="0"
-                                                                      cellpadding="0"
-                                                                      cellspacing="0"
-                                                                      width="100%"
-                                                                      style="
-                                                                        table-layout: fixed;
-                                                                      "
-                                                                      data-muid="a265ebb9-ab9c-43e8-9009-54d6151b1600"
-                                                                      data-mc-module-version="2019-10-22"
-                                                                    >
-                                                                      <tbody>
-                                                                        <tr>
-                                                                          <td
-                                                                            style="
-                                                                              padding: 50px
-                                                                                30px
-                                                                                50px
-                                                                                30px;
-                                                                              line-height: 22px;
-                                                                              text-align: inherit;
-                                                                              background-color: #6e6e6e;
-                                                                            "
-                                                                            height="100%"
-                                                                            valign="top"
-                                                                            bgcolor="#6e6e6e"
-                                                                            role="module-content"
-                                                                          >
-                                                                            <div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <span
-                                                                                  style="
-                                                                                    color: #ffffff;
-                                                                                    font-size: 18px;
-                                                                                  "
-                                                                                  ><strong
-                                                                                    >Here's
-                                                                                    what
-                                                                                    happens
-                                                                                    next:</strong
-                                                                                  ></span
-                                                                                >
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <br />
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <span
-                                                                                  style="
-                                                                                    color: #ffffff;
-                                                                                    font-size: 18px;
-                                                                                  "
-                                                                                  >1.
-                                                                                  Upload
-                                                                                  your
-                                                                                  resume
-                                                                                  &nbsp;and
-                                                                                  we'll
-                                                                                  keep
-                                                                                  it
-                                                                                  on
-                                                                                  file
-                                                                                  for
-                                                                                  every
-                                                                                  job
-                                                                                  submission.</span
-                                                                                >
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <br />
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <span
-                                                                                  style="
-                                                                                    color: #ffffff;
-                                                                                    font-size: 18px;
-                                                                                  "
-                                                                                  >2.
-                                                                                  Submit
-                                                                                  and
-                                                                                  edit
-                                                                                  personalized
-                                                                                  cover
-                                                                                  letters
-                                                                                  for
-                                                                                  every
-                                                                                  job
-                                                                                  you
-                                                                                  apply
-                                                                                  to.</span
-                                                                                >
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <br />
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <span
-                                                                                  style="
-                                                                                    color: #ffffff;
-                                                                                    font-size: 18px;
-                                                                                  "
-                                                                                  >3.
-                                                                                  Get
-                                                                                  access
-                                                                                  to
-                                                                                  our
-                                                                                  career
-                                                                                  coaches
-                                                                                  when
-                                                                                  you
-                                                                                  need
-                                                                                  1:1
-                                                                                  help
-                                                                                  with
-                                                                                  your
-                                                                                  job
-                                                                                  application.</span
-                                                                                >
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <span
-                                                                                  style="
-                                                                                    color: #ffbe00;
-                                                                                    font-size: 18px;
-                                                                                  "
-                                                                                  ><strong
-                                                                                    >+
-                                                                                    much
-                                                                                    more!</strong
-                                                                                  ></span
-                                                                                >
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <br />
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <span
-                                                                                  style="
-                                                                                    color: #ffffff;
-                                                                                    font-size: 18px;
-                                                                                  "
-                                                                                  >Need
-                                                                                  support?
-                                                                                  Our
-                                                                                  support
-                                                                                  team
-                                                                                  is
-                                                                                  always</span
-                                                                                >
-                                                                              </div>
-                                                                              <div
-                                                                                style="
-                                                                                  font-family: inherit;
-                                                                                  text-align: center;
-                                                                                "
-                                                                              >
-                                                                                <span
-                                                                                  style="
-                                                                                    color: #ffffff;
-                                                                                    font-size: 18px;
-                                                                                  "
-                                                                                  >ready
-                                                                                  to
-                                                                                  help!&nbsp;</span
-                                                                                >
-                                                                              </div>
-                                                                              <div></div>
-                                                                            </div>
-                                                                          </td>
-                                                                        </tr>
-                                                                      </tbody>
-                                                                    </table>
-                                                                    <table
-                                                                      border="0"
-                                                                      cellpadding="0"
-                                                                      cellspacing="0"
-                                                                      class="module"
-                                                                      data-role="module-button"
-                                                                      data-type="button"
-                                                                      role="module"
-                                                                      style="
-                                                                        table-layout: fixed;
-                                                                      "
-                                                                      width="100%"
-                                                                      data-muid="d050540f-4672-4f31-80d9-b395dc08abe1.1"
-                                                                    >
-                                                                      <tbody>
-                                                                        <tr>
-                                                                          <td
-                                                                            align="center"
-                                                                            bgcolor="#6e6e6e"
-                                                                            class="outer-td"
-                                                                            style="
-                                                                              padding: 0px
-                                                                                0px
-                                                                                0px
-                                                                                0px;
-                                                                            "
-                                                                          >
-                                                                            <table
-                                                                              border="0"
-                                                                              cellpadding="0"
-                                                                              cellspacing="0"
-                                                                              class="wrapper-mobile"
-                                                                              style="
-                                                                                text-align: center;
-                                                                              "
-                                                                            >
-                                                                              <tbody>
-                                                                                <tr>
-                                                                                  <td
-                                                                                    align="center"
-                                                                                    bgcolor="#ffbe00"
-                                                                                    class="inner-td"
-                                                                                    style="
-                                                                                      border-radius: 6px;
-                                                                                      font-size: 16px;
-                                                                                      text-align: center;
-                                                                                      background-color: inherit;
-                                                                                    "
-                                                                                  >
-                                                                                    <a
-                                                                                      href=""
-                                                                                      style="
-                                                                                        background-color: #ffbe00;
-                                                                                        border: 1px
-                                                                                          solid
-                                                                                          #ffbe00;
-                                                                                        border-color: #ffbe00;
-                                                                                        border-radius: 0px;
-                                                                                        border-width: 1px;
-                                                                                        color: #000000;
-                                                                                        display: inline-block;
-                                                                                        font-size: 14px;
-                                                                                        font-weight: normal;
-                                                                                        letter-spacing: 0px;
-                                                                                        line-height: normal;
-                                                                                        padding: 12px
-                                                                                          40px
-                                                                                          12px
-                                                                                          40px;
-                                                                                        text-align: center;
-                                                                                        text-decoration: none;
-                                                                                        border-style: solid;
-                                                                                        font-family: inherit;
-                                                                                      "
-                                                                                      target="_blank"
-                                                                                      >Contact
-                                                                                      Support</a
-                                                                                    >
-                                                                                  </td>
-                                                                                </tr>
-                                                                              </tbody>
-                                                                            </table>
-                                                                          </td>
-                                                                        </tr>
-                                                                      </tbody>
-                                                                    </table>
-                                                                    <table
-                                                                      class="module"
-                                                                      role="module"
-                                                                      data-type="spacer"
-                                                                      border="0"
-                                                                      cellpadding="0"
-                                                                      cellspacing="0"
-                                                                      width="100%"
-                                                                      style="
-                                                                        table-layout: fixed;
-                                                                      "
-                                                                      data-muid="c37cc5b7-79f4-4ac8-b825-9645974c984e"
-                                                                    >
-                                                                      <tbody>
-                                                                        <tr>
-                                                                          <td
-                                                                            style="
-                                                                              padding: 0px
-                                                                                0px
-                                                                                30px
-                                                                                0px;
-                                                                            "
-                                                                            role="module-content"
-                                                                            bgcolor="6E6E6E"
-                                                                          ></td>
-                                                                        </tr>
-                                                                      </tbody>
-                                                                    </table>
-                                                                  </td>
-                                                                </tr>
-                                                              </tbody>
-                                                            </table>
-                                                          </td>
-                                                        </tr>
-                                                      </tbody>
-                                                    </table>
-                                                  </td>
-                                                </tr>
-                                              </tbody>
-                                            </table>
-                                          </td>
-                                        </tr>
-                                      </table>
-                                    </center>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
-                      </tbody>
+                      Confirmer Votre Email Retech Outlet
+                    </h1>
+                  </td>
+                </tr>
+              </table>
+              <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+            </td>
+          </tr>
+          <!-- end hero -->
+    
+          <!-- start copy block -->
+          <tr>
+            <td align="center" bgcolor="#e9ecef">
+              <!--[if (gte mso 9)|(IE)]>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+            <tr>
+            <td align="center" valign="top" width="600">
+            <![endif]-->
+              <table
+                border="0"
+                cellpadding="0"
+                cellspacing="0"
+                width="100%"
+                style="max-width: 600px"
+              >
+                <!-- start copy -->
+                <tr>
+                  <td
+                    align="left"
+                    bgcolor="#ffffff"
+                    style="
+                      padding: 24px;
+                      font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+                      font-size: 16px;
+                      line-height: 24px;
+                      text-align: center;
+                    "
+                  >
+                    <p style="margin: 0">
+                      Appuyez sur le bouton ci-dessous pour confirmer votre adresse
+                      e-mail. Si vous n'a pas crée un compte
+                      <a href="https://seebrand.vercel.app"> Retech Outlet</a>, Vous
+                      pouvez <a href="https://seebrand.vercel.app"> Supprimer</a> cette adresse e-mail
+                      en toute sécurité.
+                    </p>
+                  </td>
+                </tr>
+                <!-- end copy -->
+    
+                <!-- start button -->
+                <tr>
+                  <td align="left" bgcolor="#ffffff">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td align="center" bgcolor="#ffffff" style="padding: 12px">
+                          <table border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td
+                                align="center"
+                                bgcolor="#1a82e2"
+                                style="border-radius: 6px"
+                              >
+                                <a
+                                  href="${process.env.API_BASE_URL}/verification?username=${username}&verify_token=${token}"
+                                  target="_blank"
+                                  style="
+                                    display: inline-block;
+                                    padding: 16px 36px;
+                                    font-family: 'Source Sans Pro', Helvetica, Arial,
+                                      sans-serif;
+                                    font-size: 16px;
+                                    color: #ffffff;
+                                    text-decoration: none;
+                                    border-radius: 6px;
+                                  "
+                                  >Confirmer votre email</a
+                                >
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
                     </table>
                   </td>
                 </tr>
-              </tbody>
+                <!-- end button -->
+    
+                <!-- start copy -->
+                <tr>
+                  <td
+                    align="left"
+                    bgcolor="#ffffff"
+                    style="
+                      padding: 24px;
+                      font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+                      font-size: 16px;
+                      line-height: 24px;
+                      text-align: center;
+                    "
+                  >
+                    <p style="margin: 0">
+                      Si le boutton ne fonctionne pas, Cliquer sur ce
+                    </p>
+                    <p style="margin: 0">
+                      <a href="${process.env.API_BASE_URL}/verification?username=${username}&verify_token=${token}" target="_blank">Lien de verification</a>
+                    </p>
+                  </td>
+                </tr>
+                <!-- end copy -->
+              </table>
+              <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
             </table>
-          </div>
-        </center>
+            <![endif]-->
+            </td>
+          </tr>
+          <!-- end copy block -->
+    
+          <!-- start footer -->
+          <tr>
+            <td align="center" bgcolor="#e9ecef" style="padding: 24px">
+              <!--[if (gte mso 9)|(IE)]>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+            <tr>
+            <td align="center" valign="top" width="600">
+            <![endif]-->
+              <table
+                border="0"
+                cellpadding="0"
+                cellspacing="0"
+                width="100%"
+                style="max-width: 600px"
+              >
+                <!-- start permission -->
+                <tr>
+                  <td
+                    align="center"
+                    bgcolor="#e9ecef"
+                    style="
+                      padding: 12px 24px;
+                      font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+                      font-size: 14px;
+                      line-height: 20px;
+                      color: #666;
+                    "
+                  >
+                    <p style="margin: 0">
+                      Vous avez reçu cet e-mail car nous avons reçu une demande
+                      d'inscription, Si vous n'avez pas demandé de s'inscrir vous
+                      pouvez supprimer cet e-mail en toute sécurité.
+                    </p>
+                  </td>
+                </tr>
+                <!-- end permission -->
+    
+                <!-- start unsubscribe -->
+                <tr>
+                  <td
+                    align="center"
+                    bgcolor="#e9ecef"
+                    style="
+                      padding: 12px 24px;
+                      font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+                      font-size: 14px;
+                      line-height: 20px;
+                      color: #666;
+                    "
+                  >
+                    <p style="margin: 0">
+                      To stop receiving these emails, you can
+                      <a href="${process.env.FRONT_END_URL}/unsubscribe" target="_blank">unsubscribe</a>
+                      at any time.
+                    </p>
+                    <p style="margin: 0">
+                      22 Rue 8609 Imm. Ksontini ZI Charguia 1 Tunis, Tunisie
+                    </p>
+                  </td>
+                </tr>
+                <!-- end unsubscribe -->
+              </table>
+              <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+            </td>
+          </tr>
+          <!-- end footer -->
+        </table>
+        <!-- end body -->
       </body>
     </html>
-    
-      `,
+    `,
     });
   } catch (err) {
     return res.status(400).json({ msg: "Email not sent", error: err });

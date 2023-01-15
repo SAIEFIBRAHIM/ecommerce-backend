@@ -30,8 +30,21 @@ exports.getCountries = (req, res, next) => {
     });
 };
 
-exports.getCountry = async (req, res, next) => {
+exports.getCountryId = async (req, res, next) => {
   await Countries.findById(req.params.id)
+    .then((data) => {
+      return res.status(200).json({ success: true, data: data });
+    })
+    .catch((error) => {
+      return res.status(400).json({ success: false, error: error });
+    });
+};
+exports.getCountry = async (req, res, next) => {
+  await Countries.findOne({
+    country: `${req.query.country.charAt(0).toUpperCase()}${req.query.country
+      .slice(1)
+      .toLowerCase()}`,
+  })
     .then((data) => {
       return res.status(200).json({ success: true, data: data });
     })
