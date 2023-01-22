@@ -85,11 +85,7 @@ exports.getAddressesByCountryAndState = async (req, res, next) => {
         } else {
           States.findOne(
             {
-              state: `${
-                req.query.state.includes("%20")
-                  ? req.query.state.replace("%20", " ")
-                  : req.query.state
-              }`,
+              state: req.query.state,
             },
             async (err, state) => {
               if (err) throw err;
@@ -122,9 +118,7 @@ exports.getAddressesByCountryAndState = async (req, res, next) => {
   } else {
     Countries.findOne(
       {
-        country: `${req.query.country
-          .charAt(0)
-          .toUpperCase()}${req.query.country.slice(1).toLowerCase()}`,
+        country: req.query.country,
       },
       async (err, country) => {
         if (err) throw err;
@@ -136,9 +130,7 @@ exports.getAddressesByCountryAndState = async (req, res, next) => {
         } else {
           States.findOne(
             {
-              state: `${req.query.state
-                .charAt(0)
-                .toUpperCase()}${req.query.state.slice(1).toLowerCase()}`,
+              state: req.query.state,
             },
             async (err, state) => {
               if (err) throw err;
