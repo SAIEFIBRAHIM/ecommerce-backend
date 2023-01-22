@@ -86,8 +86,8 @@ exports.getAddressesByCountryAndState = async (req, res, next) => {
           States.findOne(
             {
               state: `${
-                req.query.state.includes("_")
-                  ? req.query.state.replace("_", " ")
+                req.query.state.includes("%20")
+                  ? req.query.state.replace("%20", " ")
                   : req.query.state
               }`,
             },
