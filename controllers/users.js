@@ -9,7 +9,7 @@ exports.addUser = async (req, res, next) => {
   const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
     expiresIn: 60 * 30,
   });
-  Countries.findOne(
+  await Countries.findOne(
     {
       country: req.body.country,
     },
@@ -21,7 +21,7 @@ exports.addUser = async (req, res, next) => {
           error: `No states found under ${req.body.country}`,
         });
       } else {
-        States.findOne(
+        await States.findOne(
           {
             state: req.body.state,
           },
@@ -33,7 +33,7 @@ exports.addUser = async (req, res, next) => {
                 error: `No addresses found under ${req.body.state}`,
               });
             } else {
-              Addresses.findOne(
+              await Addresses.findOne(
                 { address: req.body.address },
                 async (err, address) => {
                   if (err) throw err;
