@@ -40,7 +40,7 @@ exports.addUser = (req, res, next) => {
                   if (!address) {
                     return res.status(400).json({
                       success: false,
-                      error: `No addresses found under ${req.body.address}`,
+                      error: `No addresses found named ${req.body.address}`,
                     });
                   } else {
                     const user = new User({
