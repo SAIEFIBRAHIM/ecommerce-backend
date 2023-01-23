@@ -43,7 +43,7 @@ app.set("view engine", "ejs");
 // CROS access setup
 app.use(
   cors({
-    origin: "https://seebrand.vercel.app",
+    origin: "https://seebrand.vercel.app","http://localhost:4000"
   })
 );
 //Mongoose Connect
