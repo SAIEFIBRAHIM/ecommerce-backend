@@ -5,80 +5,78 @@ const verifyEmail = require("../config/verifyemail");
 const States = require("../models/states");
 const Countries = require("../models/countries");
 const Addresses = require("../models/addresses");
-exports.addUser = (req, res, next) => {
+exports.addUser = async (req, res, next) => {
   const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
     expiresIn: 60 * 30,
   });
-  Countries.findOne(
-    {
-      country: req.body.country,
-    },
-    (err, country) => {
-      if (err) throw err;
-      if (!country) {
-        return res.status(400).json({
-          success: false,
-          error: `No states found under ${req.body.country}`,
-        });
+  await Countries.findOne({
+    country: req.body.country,
+  })
+    .then(async (data) => {
+      if (!data) {
+        res
+          .status(400)
+          .json({ msg: `no states found under ${req.body.country}` });
       } else {
-        States.findOne(
-          {
-            state: req.body.state,
-          },
-          (err, state) => {
-            if (err) throw err;
-            if (!state) {
-              return res.status(400).json({
-                success: false,
-                error: `No addresses found under ${req.body.state}`,
-              });
+        await States.findOne({ state: req.body.state })
+          .then(async (result) => {
+            if (!result) {
+              res
+                .status(400)
+                .json({ msg: `no states found under ${req.body.country}` });
             } else {
-              Addresses.findOne(
-                { address: req.body.address },
-                async (err, address) => {
-                  if (err) throw err;
+              await Addresses.findOne({ address: req.body.address })
+                .then(async (address) => {
                   if (!address) {
-                    return res.status(400).json({
-                      success: false,
-                      error: `No addresses found named ${req.body.address}`,
-                    });
+                    res
+                      .status(400)
+                      .json({
+                        msg: `no addresses found named ${req.body.address}`,
+                      });
                   } else {
                     const user = new User({
                       ...req.body,
-                      country: country._id,
-                      state: state._id,
+                      country: data._id,
+                      state: result._id,
                       address: address._id,
                       verify_token: verifyToken,
                     });
                     await user
                       .save()
-                      .then((data) => {
+                      .then((found) => {
                         verifyEmail(
-                          data.email,
-                          data.first_name,
-                          data.last_name,
+                          found.email,
+                          found.first_name,
+                          found.last_name,
                           verifyToken
                         );
                         return res.status(201).json({
                           success: true,
                           msg: "Successful created new User",
                           hint: "verification link sent to your email",
-                          data: data,
+                          data: found,
                         });
                       })
                       .catch((error) => {
                         return res.status(403).json({ error: error });
                       });
                   }
-                }
-              );
+                })
+                .catch((err) => {
+                  res.status(400).json({ success: false, error: err });
+                });
             }
-          }
-        );
+          })
+          .catch((err) => {
+            res.status(400).json({ success: false, error: err });
+          });
       }
-    }
-  );
+    })
+    .catch((err) => {
+      res.status(400).json({ success: false, error: err });
+    });
 };
+
 exports.getUsers = (req, res, next) => {
   req.query.populate === "address"
     ? User.find()
