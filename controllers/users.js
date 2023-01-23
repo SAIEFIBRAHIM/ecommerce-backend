@@ -16,7 +16,11 @@ exports.addUser = async (req, res, next) => {
       if (!data) {
         res
           .status(400)
-          .json({ msg: `no states found under ${req.body.country}` });
+          .json({
+            success: false,
+            msg: `no states found under ${req.body.country}`,
+            data: data,
+          });
       } else {
         await States.findOne({ state: req.body.state })
           .then(async (result) => {
@@ -28,11 +32,9 @@ exports.addUser = async (req, res, next) => {
               await Addresses.findOne({ address: req.body.address })
                 .then(async (address) => {
                   if (!address) {
-                    res
-                      .status(400)
-                      .json({
-                        msg: `no addresses found named ${req.body.address}`,
-                      });
+                    res.status(400).json({
+                      msg: `no addresses found named ${req.body.address}`,
+                    });
                   } else {
                     const user = new User({
                       ...req.body,
