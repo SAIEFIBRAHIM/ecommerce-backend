@@ -41,7 +41,7 @@ app.use("/api", apiLimiter);
 app.set("view engine", "ejs");
 
 // CROS access setup
-app.use(cors());
+app.use(cors({ origin: "*" }));
 
 //Mongoose Connect
 mongoose.set("strictQuery", true);

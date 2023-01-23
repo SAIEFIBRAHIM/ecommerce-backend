@@ -10,7 +10,7 @@ exports.addUser = async (req, res, next) => {
     expiresIn: 60 * 30,
   });
   const country = await Countries.findOne({
-    country: "Tunisie",
+    country: req.body.country,
   });
 
   const state = await States.findOne({ state: req.body.state });
