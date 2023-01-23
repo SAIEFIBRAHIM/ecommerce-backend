@@ -9,69 +9,34 @@ exports.addUser = async (req, res, next) => {
   const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
     expiresIn: 60 * 30,
   });
-  await Countries.findById(req.body.country)
-    .then(async (data) => {
-      if (!data) {
-        res.status(400).json({
-          success: false,
-          msg: `no states found under ${req.body.country}`,
-          data: data,
-        });
-      } else {
-        await States.findOne({ state: req.body.state })
-          .then(async (result) => {
-            if (!result) {
-              res
-                .status(400)
-                .json({ msg: `no states found under ${req.body.country}` });
-            } else {
-              await Addresses.findOne({ address: req.body.address })
-                .then(async (address) => {
-                  if (!address) {
-                    res.status(400).json({
-                      msg: `no addresses found named ${req.body.address}`,
-                    });
-                  } else {
-                    const user = new User({
-                      ...req.body,
-                      country: data._id,
-                      state: result._id,
-                      address: address._id,
-                      verify_token: verifyToken,
-                    });
-                    await user
-                      .save()
-                      .then((found) => {
-                        verifyEmail(
-                          found.email,
-                          found.first_name,
-                          found.last_name,
-                          verifyToken
-                        );
-                        return res.status(201).json({
-                          success: true,
-                          msg: "Successful created new User",
-                          hint: "verification link sent to your email",
-                          data: found,
-                        });
-                      })
-                      .catch((error) => {
-                        return res.status(403).json({ error: error });
-                      });
-                  }
-                })
-                .catch((err) => {
-                  res.status(400).json({ success: false, error: err });
-                });
-            }
-          })
-          .catch((err) => {
-            res.status(400).json({ success: false, error: err });
-          });
-      }
+  const country = await Countries.findOne({
+    country: req.body.country,
+  });
+
+  const state = await States.findOne({ state: req.body.state });
+
+  const address = await Addresses.findOne({ address: req.body.address });
+
+  const user = new User({
+    ...req.body,
+    country: country._id,
+    state: state._id,
+    address: address._id,
+    verify_token: verifyToken,
+  });
+  await user
+    .save()
+    .then((found) => {
+      verifyEmail(found.email, found.first_name, found.last_name, verifyToken);
+      return res.status(201).json({
+        success: true,
+        msg: "Successful created new User",
+        hint: "verification link sent to your email",
+        data: found,
+      });
     })
-    .catch((err) => {
-      res.status(400).json({ success: false, error: err });
+    .catch((error) => {
+      return res.status(403).json({ error: error });
     });
 };
 
