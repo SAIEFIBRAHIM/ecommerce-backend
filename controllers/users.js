@@ -9,7 +9,7 @@ exports.addUser = async (req, res, next) => {
   const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
     expiresIn: 60 * 30,
   });
-  Countries.findOne(
+  await Countries.findOne(
     {
       country: req.body.country,
     },
