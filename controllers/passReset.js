@@ -4,7 +4,7 @@ const resetPassEmail = require("../config/resetpassemail");
 
 exports.forgetPass = (req, res, next) => {
   User.findOne({
-    $or: [{ username: req.query.login }, { email: req.query.login }],
+    email: req.query.email,
   })
     .then((data) => {
       const resetToken = jwt.sign(data.toJSON(), process.env.VERIFY_TOKEN_KEY, {

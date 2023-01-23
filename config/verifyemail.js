@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 
 // async..await is not allowed in global scope, must use a wrapper
-const verifyEmail = async (to, fname, username, token) => {
+const verifyEmail = async (to, fname, lname, token) => {
   try {
     let transporter = nodemailer.createTransport({
       host: process.env.HOST,
@@ -17,7 +17,11 @@ const verifyEmail = async (to, fname, username, token) => {
     await transporter.sendMail({
       from: process.env.EUSER,
       to: to,
-      subject: "Confirmer Votre Compte Retech Outlet",
+      subject: `${fname.charAt(0).toUpperCase()}${fname
+        .slice(1)
+        .toLowerCase()} ${lname.charAt(0).toUpperCase()}${lname
+        .slice(1)
+        .toLowerCase()} Merci de Confirmer Votre Compte Retech Outlet`,
       html: `<html>
       <head>
         <meta charset="utf-8" />
@@ -138,7 +142,11 @@ const verifyEmail = async (to, fname, username, token) => {
             opacity: 0;
           "
         >
-          Confirmer Votre Compte Retech Outlet
+          ${fname.charAt(0).toUpperCase()}${fname
+        .slice(1)
+        .toLowerCase()} ${lname.charAt(0).toUpperCase()}${lname
+        .slice(1)
+        .toLowerCase()} Merci de Confirmer Votre Compte Retech Outlet
         </div>
         <!-- end preheader -->
     
@@ -246,7 +254,9 @@ const verifyEmail = async (to, fname, username, token) => {
                                 style="border-radius: 6px"
                               >
                                 <a
-                                  href="${process.env.API_BASE_URL}/verification?username=${username}&verify_token=${token}"
+                                  href="${
+                                    process.env.API_BASE_URL
+                                  }/verification?username=${to}&verify_token=${token}"
                                   target="_blank"
                                   style="
                                     display: inline-block;
@@ -287,7 +297,9 @@ const verifyEmail = async (to, fname, username, token) => {
                       Si le boutton ne fonctionne pas, Cliquer sur ce
                     </p>
                     <p style="margin: 0">
-                      <a href="${process.env.API_BASE_URL}/verification?username=${username}&verify_token=${token}" target="_blank">Lien de verification</a>
+                      <a href="${
+                        process.env.API_BASE_URL
+                      }/verification?username=${to}&verify_token=${token}" target="_blank">Lien de verification</a>
                     </p>
                   </td>
                 </tr>
@@ -354,7 +366,9 @@ const verifyEmail = async (to, fname, username, token) => {
                   >
                     <p style="margin: 0">
                       To stop receiving these emails, you can
-                      <a href="${process.env.FRONT_END_URL}/unsubscribe" target="_blank">unsubscribe</a>
+                      <a href="${
+                        process.env.FRONT_END_URL
+                      }/unsubscribe" target="_blank">unsubscribe</a>
                       at any time.
                     </p>
                     <p style="margin: 0">

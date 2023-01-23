@@ -27,7 +27,7 @@ exports.requestVerify = async (req, res, next) => {
             await verifyEmail(
               data.email,
               data.first_name,
-              data.username,
+              data.last_name,
               verifyToken
             );
             return res.status(200).json({
@@ -53,7 +53,7 @@ exports.verifyUser = async (req, res, next) => {
   if (userVerification.verified) {
     return res.redirect(301, `${process.env.FRONT_END_URL}/account/verified`);
   }
-  await User.findOne({ username: req.query.username })
+  await User.findOne({ email: req.query.email })
     .then(async (found) => {
       if (userVerification.exp * 1000 < Date.now()) {
         return res.redirect(301, `${process.env.FRONT_END_URL}/account/verify`);

@@ -31,7 +31,7 @@ exports.getTicket = (req, res, next) => {
     });
 };
 exports.getOwnAllTickets = async (req, res, next) => {
-  await Users.findOne({ username: req.params.username })
+  await Users.findOne({ email: req.params.email })
     .then(async (data) => {
       await Tickets.find({ user: data._id })
         .then((result) => {
@@ -46,7 +46,7 @@ exports.getOwnAllTickets = async (req, res, next) => {
     });
 };
 exports.getOwnTicket = async (req, res, next) => {
-  await Users.findOne({ username: req.params.username })
+  await Users.findOne({ email: req.params.email })
     .then((data) => {
       Tickets.findById(req.params.id)
         .then((found) => {
@@ -77,7 +77,7 @@ exports.updateTicket = (req, res, next) => {
     });
 };
 exports.updateOwnTicket = async (req, res, next) => {
-  await Users.findOne({ username: req.params.username })
+  await Users.findOne({ email: req.params.email })
     .then((data) => {
       Tickets.findById(req.params.id)
         .then((found) => {

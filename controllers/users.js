@@ -6,11 +6,14 @@ exports.addUser = async (req, res, next) => {
   const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
     expiresIn: 60 * 30,
   });
-  const user = new User({ ...req.body, verify_token: verifyToken });
+  const user = new User({
+    ...req.body,
+    verify_token: verifyToken,
+  });
   await user
     .save()
     .then((data) => {
-      verifyEmail(data.email, data.first_name, data.username, verifyToken);
+      verifyEmail(data.email, data.first_name, data.last_name, verifyToken);
       return res.status(201).json({
         success: true,
         msg: "Successful created new User",
@@ -63,83 +66,71 @@ exports.getUserId = (req, res, next) => {
         });
 };
 exports.updateUserId = (req, res, next) => {
-  const { country, city, road } = req.body.address;
-  Address.find({
-    country: country,
-    city: city,
-    road: road,
+  User.findByIdAndUpdate(req.params.id, {
+    ...req.body,
   })
     .then((data) => {
-      User.findByIdAndUpdate(req.params.id, {
-        ...req.body,
-        address: data._id,
-      })
-        .then((result) => {
-          return res.status(200).json({ success: true, data: result });
-        })
-        .catch((error) => {
-          return res.status(404).json({ error: error });
-        });
+      return res.status(200).json({ success: true, data: data });
     })
-    .catch((err) => {
-      return res.status(404).json({ error: "No User Found" });
+    .catch((error) => {
+      return res.status(404).json({ error: error });
     });
 };
+
 exports.deleteUserId = (req, res, next) => {
   User.findByIdAndDelete(req.params.id)
-    .then((result) => {
-      return res.status(200).json({ deleted: true });
+    .then((data) => {
+      return res.status(200).json({ deleted: true, data: data });
     })
 
     .catch((err) => {
-      return res.status(404).json({ error: "No User Found" });
+      return res.status(404).json({ error: err, msg: "No User Found" });
     });
 };
 exports.login = (req, res, next) => {
-  User.findOne(
-    { $or: [{ username: req.body.login }, { email: req.body.login }] },
-    (err, user) => {
-      if (err) throw err;
-      if (!user) {
-        res.status(400).send({
-          success: false,
-          msg: "User not found",
-        });
-      } else {
-        user.comparePassword(req.body.password, (err, isMatch) => {
-          if (isMatch && !err) {
-            const token = jwt.sign(user.toJSON(), process.env.TOKEN_KEY, {
-              expiresIn: process.env.TOKEN_LIFE,
-            });
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) throw err;
+    if (!user) {
+      res.status(400).send({
+        success: false,
+        msg: "User not found",
+      });
+    } else {
+      user.comparePassword(req.body.password, (err, isMatch) => {
+        if (isMatch && !err) {
+          const token = jwt.sign(user.toJSON(), process.env.TOKEN_KEY, {
+            expiresIn: process.env.TOKEN_LIFE,
+          });
 
-            const refreshToken = jwt.sign(
-              user.toJSON(),
-              process.env.REFRESH_TOKEN_KEY,
-              {
-                expiresIn: process.env.REFRESH_TOKEN_LIFE,
-              }
-            );
-            const response = {
-              status: "Logged in",
-              token: token,
-              refreshToken: refreshToken,
-              user: {
-                username: user.username,
-                _id: user._id,
-              },
-            };
-            tokenList[refreshToken] = response;
-            res.status(200).json(response);
-          } else {
-            res.status(401).send({
-              success: false,
-              msg: "Authentication failed. Wrong password.",
-            });
-          }
-        });
-      }
+          const refreshToken = jwt.sign(
+            user.toJSON(),
+            process.env.REFRESH_TOKEN_KEY,
+            {
+              expiresIn: process.env.REFRESH_TOKEN_LIFE,
+            }
+          );
+          const response = {
+            success: true,
+            token: token,
+            refreshToken: refreshToken,
+            user: {
+              email: user.email,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              _id: user._id,
+            },
+          };
+          tokenList[refreshToken] = response;
+          res.status(200).json(response);
+        } else {
+          res.status(401).send({
+            success: false,
+            msg: "Authentication failed. Wrong password.",
+          });
+        }
+      });
     }
-  );
+  });
 };
 exports.token = (req, res, next) => {
   if (req.body.refreshToken && req.body.refreshToken in tokenList) {
@@ -149,7 +140,7 @@ exports.token = (req, res, next) => {
     );
     User.findOne(
       {
-        username: userVerification.username,
+        email: userVerification.email,
       },
       (err, user) => {
         if (err) throw err;

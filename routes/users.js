@@ -12,10 +12,10 @@ const loginLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 const signupLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 10, // Limit each IP to 5 requests per `window` (here, per 5 minutes)
+  windowMs: 12 * 60 * 60 * 1000, // 12 hours
+  max: 10, // Limit each IP to 5 requests per `window` (here, per 12 hours)
   message:
-    "Too many accounts created from this IP, please try again after 5 minutes",
+    "Too many accounts created from this IP, please try again after 12 hours",
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });

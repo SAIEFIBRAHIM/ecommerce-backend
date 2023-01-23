@@ -4,11 +4,6 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 
 const UserSchema = new Schema({
-  username: {
-    type: String,
-    required: [true, "Username field is required"],
-    unique: true,
-  },
   email: {
     type: String,
     required: [true, "Email field is required"],
@@ -33,7 +28,7 @@ const UserSchema = new Schema({
   },
   gender: {
     type: String,
-    enum: ["Male", "Female"],
+    enum: ["Homme", "Femme"],
   },
   phone: {
     type: Number,
@@ -44,10 +39,19 @@ const UserSchema = new Schema({
     enum: ["Admin", "Supervisor", "User"],
     default: "User",
   },
+  country: {
+    type: mongoose.Types.ObjectId,
+    ref: "Countries",
+  },
+  state: {
+    type: mongoose.Types.ObjectId,
+    ref: "States",
+  },
   address: {
     type: mongoose.Types.ObjectId,
     ref: "Addresses",
   },
+  newsletter: { type: Boolean, default: false },
   verified: {
     type: Boolean,
     default: false,
