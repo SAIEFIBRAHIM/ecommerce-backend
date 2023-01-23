@@ -13,7 +13,7 @@ exports.addUser = async (req, res, next) => {
     {
       country: req.body.country,
     },
-    async (err, country) => {
+    (err, country) => {
       if (err) throw err;
       if (!country) {
         return res.status(400).json({
@@ -21,11 +21,11 @@ exports.addUser = async (req, res, next) => {
           error: `No states found under ${req.body.country}`,
         });
       } else {
-        await States.findOne(
+        States.findOne(
           {
             state: req.body.state,
           },
-          async (err, state) => {
+          (err, state) => {
             if (err) throw err;
             if (!state) {
               return res.status(400).json({
@@ -33,7 +33,7 @@ exports.addUser = async (req, res, next) => {
                 error: `No addresses found under ${req.body.state}`,
               });
             } else {
-              await Addresses.findOne(
+              Addresses.findOne(
                 { address: req.body.address },
                 async (err, address) => {
                   if (err) throw err;
