@@ -9,6 +9,8 @@ var mongoose = require("mongoose");
 var swaggerJsDoc = require("swagger-jsdoc");
 var swaggerUi = require("swagger-ui-express");
 var dbConfig = require("./config/database");
+var cors = require("cors");
+
 //routers
 var usersRouter = require("./routes/users");
 var userVerificationRouter = require("./routes/userVerification");
@@ -39,13 +41,11 @@ app.use("/api", apiLimiter);
 app.set("view engine", "ejs");
 
 // CROS access setup
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "*");
-  res.setHeader("Access-Control-Allow-Methods", "*");
-
-  next();
-});
+app.use(
+  cors({
+    origin: "https://seebrand.vercel.app",
+  })
+);
 //Mongoose Connect
 mongoose.set("strictQuery", true);
 mongoose

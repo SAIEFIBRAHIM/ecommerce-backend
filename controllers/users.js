@@ -5,11 +5,11 @@ const verifyEmail = require("../config/verifyemail");
 const States = require("../models/states");
 const Countries = require("../models/countries");
 const Addresses = require("../models/addresses");
-exports.addUser = async (req, res, next) => {
+exports.addUser = (req, res, next) => {
   const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
     expiresIn: 60 * 30,
   });
-  await Countries.findOne(
+  Countries.findOne(
     {
       country: req.body.country,
     },
