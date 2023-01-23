@@ -41,15 +41,7 @@ app.use("/api", apiLimiter);
 app.set("view engine", "ejs");
 
 // CROS access setup
-app.use(
-  cors({
-    origin: [
-      "https://seebrand.vercel.app",
-      "https://seebrand.vercel.app/signup",
-      "http://localhost:4000",
-    ],
-  })
-);
+app.use(cors());
 
 //Mongoose Connect
 mongoose.set("strictQuery", true);
