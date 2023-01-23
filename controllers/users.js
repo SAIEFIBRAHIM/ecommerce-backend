@@ -9,18 +9,14 @@ exports.addUser = async (req, res, next) => {
   const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
     expiresIn: 60 * 30,
   });
-  await Countries.findOne({
-    country: req.body.country,
-  })
+  await Countries.findById(req.body.country)
     .then(async (data) => {
       if (!data) {
-        res
-          .status(400)
-          .json({
-            success: false,
-            msg: `no states found under ${req.body.country}`,
-            data: data,
-          });
+        res.status(400).json({
+          success: false,
+          msg: `no states found under ${req.body.country}`,
+          data: data,
+        });
       } else {
         await States.findOne({ state: req.body.state })
           .then(async (result) => {
