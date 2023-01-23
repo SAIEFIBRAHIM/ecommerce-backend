@@ -2,28 +2,82 @@ const User = require("../models/users");
 const jwt = require("jsonwebtoken");
 const tokenList = [];
 const verifyEmail = require("../config/verifyemail");
+const States = require("../models/states");
+const Countries = require("../models/countries");
+const Addresses = require("../models/addresses");
 exports.addUser = async (req, res, next) => {
   const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
     expiresIn: 60 * 30,
   });
-  const user = new User({
-    ...req.body,
-    verify_token: verifyToken,
-  });
-  await user
-    .save()
-    .then((data) => {
-      verifyEmail(data.email, data.first_name, data.last_name, verifyToken);
-      return res.status(201).json({
-        success: true,
-        msg: "Successful created new User",
-        hint: "verification link sent to your email",
-        data: data,
-      });
-    })
-    .catch((error) => {
-      return res.status(403).json({ error: error });
-    });
+  Countries.findOne(
+    {
+      country: req.body.country,
+    },
+    async (err, country) => {
+      if (err) throw err;
+      if (!country) {
+        return res.status(400).json({
+          success: false,
+          error: `No states found under ${req.body.country}`,
+        });
+      } else {
+        States.findOne(
+          {
+            state: req.body.state,
+          },
+          async (err, state) => {
+            if (err) throw err;
+            if (!state) {
+              return res.status(400).json({
+                success: false,
+                error: `No addresses found under ${req.body.state}`,
+              });
+            } else {
+              Addresses.findOne(
+                { address: req.body.address },
+                async (err, address) => {
+                  if (err) throw err;
+                  if (!address) {
+                    return res.status(400).json({
+                      success: false,
+                      error: `No addresses found under ${req.body.address}`,
+                    });
+                  } else {
+                    const user = new User({
+                      ...req.body,
+                      country: country._id,
+                      state: state._id,
+                      address: address._id,
+                      verify_token: verifyToken,
+                    });
+                    await user
+                      .save()
+                      .then((data) => {
+                        verifyEmail(
+                          data.email,
+                          data.first_name,
+                          data.last_name,
+                          verifyToken
+                        );
+                        return res.status(201).json({
+                          success: true,
+                          msg: "Successful created new User",
+                          hint: "verification link sent to your email",
+                          data: data,
+                        });
+                      })
+                      .catch((error) => {
+                        return res.status(403).json({ error: error });
+                      });
+                  }
+                }
+              );
+            }
+          }
+        );
+      }
+    }
+  );
 };
 exports.getUsers = (req, res, next) => {
   req.query.populate === "address"
