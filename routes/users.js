@@ -13,7 +13,7 @@ const loginLimiter = rateLimit({
 });
 const signupLimiter = rateLimit({
   windowMs: 12 * 60 * 60 * 1000, // 12 hours
-  max: 500, // Limit each IP to 5 requests per `window` (here, per 12 hours)
+  max: 2, // Limit each IP to 5 requests per `window` (here, per 12 hours)
   message:
     "Too many accounts created from this IP, please try again after 12 hours",
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers

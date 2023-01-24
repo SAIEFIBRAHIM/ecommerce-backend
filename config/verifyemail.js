@@ -256,7 +256,7 @@ const verifyEmail = async (to, fname, lname, token) => {
                                 <a
                                   href="${
                                     process.env.API_BASE_URL
-                                  }/verification?username=${to}&verify_token=${token}"
+                                  }/verification?email=${to}&verify_token=${token}"
                                   target="_blank"
                                   style="
                                     display: inline-block;
@@ -299,7 +299,7 @@ const verifyEmail = async (to, fname, lname, token) => {
                     <p style="margin: 0">
                       <a href="${
                         process.env.API_BASE_URL
-                      }/verification?username=${to}&verify_token=${token}" target="_blank">Lien de verification</a>
+                      }/verification?email=${to}&verify_token=${token}" target="_blank">Lien de verification</a>
                     </p>
                   </td>
                 </tr>
