@@ -90,6 +90,7 @@ exports.getStatesByCountryName = (req, res, next) => {
           await States.find({
             country: found._id,
           })
+            .sort({ state: 1 })
             .populate("country", "country")
             .then((data) => {
               return res.status(200).json({ success: true, data: data });
@@ -118,6 +119,7 @@ exports.getStatesByCountryName = (req, res, next) => {
           await States.find({
             country: found._id,
           })
+            .sort({ state: 1 })
             .then((data) => {
               return res.status(200).json({ success: true, data: data });
             })

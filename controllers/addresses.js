@@ -99,6 +99,7 @@ exports.getAddressesByCountryAndState = async (req, res, next) => {
                   country: country._id,
                   state: state._id,
                 })
+                  .sort({ address: 1 })
                   .populate("country", "country")
                   .populate("state", "state")
                   .then((data) => {
@@ -144,6 +145,7 @@ exports.getAddressesByCountryAndState = async (req, res, next) => {
                   country: country._id,
                   state: state._id,
                 })
+                  .sort({ address: 1 })
                   .then((data) => {
                     return res.status(200).json({ success: true, data: data });
                   })
