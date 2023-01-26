@@ -8,10 +8,7 @@ exports.requestVerify = async (req, res, next) => {
   await User.findById(decodedUser._id)
     .then(async (found) => {
       if (found.verified) {
-        return res.redirect(
-          301,
-          `${process.env.FRONT_END_URL}/account/verified`
-        );
+        return res.status(200).json({ success: true, verifed: true });
       } else {
         const verifyToken = jwt.sign(
           found.toJSON(),
@@ -51,24 +48,24 @@ exports.verifyUser = async (req, res, next) => {
     process.env.VERIFY_TOKEN_KEY
   );
   if (userVerification.verified) {
-    return res.redirect(301, `${process.env.FRONT_END_URL}/account/verified`);
+    return res.status(200).json({ success: true, verified: true });
   }
   await User.findOne({ email: req.query.email })
     .then(async (found) => {
       if (userVerification.exp * 1000 < Date.now()) {
-        return res.redirect(301, `${process.env.FRONT_END_URL}/account/verify`);
+        return res.status(400).json({
+          success: false,
+          verified: false,
+          msg: "Request verification again",
+        });
       } else if (req.query.verify_token === found.verify_token) {
         found.verified = true;
         found.verify_token = undefined;
         await found
           .save()
           .then(() => {
-            return res.redirect(
-              301,
-              `${process.env.FRONT_END_URL}/account/verified`
-            );
+            return res.status(200).json({ success: true, verified: true });
           })
-
           .catch((err) => {
             console.log(err, "Unexpected error please try again later");
             return res.status(404).json({ error: err });
@@ -76,7 +73,7 @@ exports.verifyUser = async (req, res, next) => {
       } else {
         return res
           .status(400)
-          .json({ msg: "Something went wrong try again please" });
+          .json({ msg: "Something went wrong try again later please" });
       }
     })
     .catch((error) => {
