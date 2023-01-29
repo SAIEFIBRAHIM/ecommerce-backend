@@ -36,7 +36,7 @@ exports.addUser = async (req, res, next) => {
       });
     })
     .catch((error) => {
-      return res.status(403).json({ error: error });
+      return res.status(400).json({ error: error });
     });
 };
 
