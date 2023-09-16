@@ -83,22 +83,34 @@ exports.getUserId = (req, res, next) => {
         });
 };
 exports.updateUserId = async (req, res, next) => {
-  const country = await Countries.findOne({ country: req.body.country });
+  let updateData = { ...req.body };
 
-  const state = await States.findOne({ state: req.body.state });
-
-  const address = await Addresses.findOne({ address: req.body.address });
-  if (req.body.password) {
-    const password = bcrypt.hashSync(req.body.password, 10);
+  if (req.body.country) {
+    const country = await Countries.findOne({ country: req.body.country });
+    if (country) {
+      updateData.country = country._id;
+    }
   }
 
-  User.findByIdAndUpdate(req.params.id, {
-    ...req.body,
-    country: country._id,
-    state: state._id,
-    address: address._id,
-    password: password,
-  })
+  if (req.body.state) {
+    const state = await States.findOne({ state: req.body.state });
+    if (state) {
+      updateData.state = state._id;
+    }
+  }
+
+  if (req.body.address) {
+    const address = await Addresses.findOne({ address: req.body.address });
+    if (address) {
+      updateData.address = address._id;
+    }
+  }
+
+  if (req.body.password) {
+    updateData.password = bcrypt.hashSync(req.body.password, 10);
+  }
+
+  User.findByIdAndUpdate(req.params.id, updateData, { new: true })
     .then((data) => {
       return res.status(200).json({ success: true, data: data });
     })
