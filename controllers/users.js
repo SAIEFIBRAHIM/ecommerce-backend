@@ -9,9 +9,7 @@ exports.addUser = async (req, res, next) => {
   const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
     expiresIn: 60 * 30,
   });
-  const country = await Countries.findOne({
-    country: req.body.country,
-  });
+  const country = await Countries.findOne({ country: req.body.country });
 
   const state = await States.findOne({ state: req.body.state });
 
@@ -80,9 +78,18 @@ exports.getUserId = (req, res, next) => {
           return res.status(403).json({ error: err });
         });
 };
-exports.updateUserId = (req, res, next) => {
+exports.updateUserId = async (req, res, next) => {
+  const country = await Countries.findOne({ country: req.body.country });
+
+  const state = await States.findOne({ state: req.body.state });
+
+  const address = await Addresses.findOne({ address: req.body.address });
+
   User.findByIdAndUpdate(req.params.id, {
     ...req.body,
+    country: country._id,
+    state: state._id,
+    address: address._id,
   })
     .then((data) => {
       return res.status(200).json({ success: true, data: data });
