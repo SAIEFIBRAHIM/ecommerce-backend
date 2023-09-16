@@ -88,7 +88,9 @@ exports.updateUserId = async (req, res, next) => {
   const state = await States.findOne({ state: req.body.state });
 
   const address = await Addresses.findOne({ address: req.body.address });
-  const password = bcrypt.hashSync(req.body.password, 10);
+  if (req.body.password) {
+    const password = bcrypt.hashSync(req.body.password, 10);
+  }
 
   User.findByIdAndUpdate(req.params.id, {
     ...req.body,
