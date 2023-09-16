@@ -59,7 +59,7 @@ exports.getUsers = (req, res, next) => {
 exports.getUserId = (req, res, next) => {
   req.query.populate === "address"
     ? User.findById(req.params.id)
-        .populate("address")
+        .populate("address", "state", "country")
         .then((data) => {
           data
             ? res.status(200).json({ success: true, data: data })
