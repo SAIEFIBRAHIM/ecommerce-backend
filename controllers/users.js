@@ -87,12 +87,16 @@ exports.updateUserId = async (req, res, next) => {
 
   const address = await Addresses.findOne({ address: req.body.address });
 
-  User.findByIdAndUpdate(req.params.id, {
-    ...req.body,
-    country: country._id,
-    state: state._id,
-    address: address._id,
-  })
+  User.findByIdAndUpdate(
+    req.params.id,
+    {
+      ...req.body,
+      country: country._id,
+      state: state._id,
+      address: address._id,
+    },
+    { runValidators: true }
+  )
     .then((data) => {
       return res.status(200).json({ success: true, data: data });
     })
