@@ -5,6 +5,8 @@ const verifyEmail = require("../config/verifyemail");
 const States = require("../models/states");
 const Countries = require("../models/countries");
 const Addresses = require("../models/addresses");
+const bcrypt = require("bcrypt");
+
 exports.addUser = async (req, res, next) => {
   const verifyToken = jwt.sign(req.body, process.env.VERIFY_TOKEN_KEY, {
     expiresIn: 60 * 30,
@@ -86,17 +88,15 @@ exports.updateUserId = async (req, res, next) => {
   const state = await States.findOne({ state: req.body.state });
 
   const address = await Addresses.findOne({ address: req.body.address });
+  const password = bcrypt.hashSync(req.body.password, 10);
 
-  User.findByIdAndUpdate(
-    req.params.id,
-    {
-      ...req.body,
-      country: country._id,
-      state: state._id,
-      address: address._id,
-    },
-    { runValidators: true }
-  )
+  User.findByIdAndUpdate(req.params.id, {
+    ...req.body,
+    country: country._id,
+    state: state._id,
+    address: address._id,
+    password: password,
+  })
     .then((data) => {
       return res.status(200).json({ success: true, data: data });
     })
