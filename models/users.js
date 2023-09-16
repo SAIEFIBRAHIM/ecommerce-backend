@@ -94,7 +94,7 @@ UserSchema.pre("save", function (next) {
     return next();
   }
 });
-UserSchema.pre("update", function (next) {
+UserSchema.pre("findOneAndUpdate", function (next) {
   var User = this;
   if (this.isModified("password") || this.isNew) {
     bcrypt.genSalt(10, function (err, salt) {
